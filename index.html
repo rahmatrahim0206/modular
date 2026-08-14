@@ -205,7 +205,7 @@
         .app-shell { min-height: calc(100vh - 4.25rem); }
         .app-sidebar { width: 218px; position: fixed; left: 0; top: 4.25rem; bottom: 0; }
         .sidebar-inner { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-        .app-main { margin-left: 218px; min-height: calc(100vh - 4.25rem); }
+        .app-main { margin-left: 218px; width: calc(100% - 218px); max-width: calc(100% - 218px); min-height: calc(100vh - 4.25rem); box-sizing: border-box; }
         .sidebar-btn { min-height: 42px; }
         .sidebar-btn.active { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; }
         .live-upper-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr) minmax(280px, 1fr); gap: 1rem; min-height: 0; }
@@ -237,7 +237,7 @@
             .sidebar-inner { flex-direction: row; overflow-x: auto; align-items: center; padding: .5rem .75rem; }
             .sidebar-inner > div:first-child, .sidebar-school { display:none; }
             .sidebar-inner > div:nth-child(2) { display:flex; flex-direction:row; width:100%; overflow-x:auto; }
-            .app-main { margin-left: 0; }
+            .app-main { margin-left: 0; width: 100%; max-width: 100%; }
             .live-upper-grid { grid-template-columns: 1fr 1fr; }
             .feed-card { grid-column: 1 / -1; min-height: 420px; }
             .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
