@@ -1,1006 +1,763 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full bg-slate-50">
+<html lang="id" class="h-full bg-slate-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <title>PresensiLive Pro - System Monitoring Absensi Realtime</title>
 
-    <title>PresensiLive Pro - Dashboard Absensi Realtime</title>
-    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         brand: {
-                            50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9',
-                            600: '#0284c7', 700: '#0369a1', 900: '#0c4a6e',
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     }
                 }
             }
         }
     </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- SheetJS (Excel Export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <style>
+        body { font-family: 'Inter', sans-serif; }
         .glass-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(226, 232, 240, 0.8);
         }
-
-        /* Panel kanan: dua box selalu sama tinggi dan proporsional */
-        #view-live .attendance-side-panels {
-            min-height: 0;
-        }
-        #categoryDonutChart {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        #absentList > div {
-            min-height: 0;
-        }
-        @media (min-width: 1280px) {
-            #view-live > .grid:nth-child(2) > div:last-child > .grid {
-                min-height: 0;
-            }
-            #view-live > .grid:nth-child(2) > div:last-child > .grid > div {
-                min-width: 0;
-            }
-        }
-
-        /* CHART DONUT: ruang atas dan bawah agar tidak menempel */
-        .donut-chart-area {
-            flex: 1 1 auto;
-            min-height: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 18px 8px 22px;
-            margin: 2px 0;
-        }
-        .donut-chart-area .donut-wrap {
-            width: 100%;
-            height: 100%;
-            min-height: 170px;
-            max-height: 260px;
-            margin: 0 auto;
-        }
-        .donut-chart-area canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        .pulse-live {
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-            animation: pulse-green 2s infinite;
-        }
-        @keyframes pulse-green {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Smooth Horizontal Scrolling */
-        .touch-scroll {
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* FULL SCREEN DASHBOARD 1920x1080 */
-        @media (min-width: 1280px) {
-            html, body {
-                min-height: 100vh;
-            }
-
-            body {
-                min-height: 100vh;
-            }
-
-            #view-live {
-                height: calc(100vh - 9.5rem);
-                min-height: 700px;
-                display: flex;
-                flex-direction: column;
-            }
-
-            #view-live > .grid:first-child {
-                flex: 0 0 auto;
-            }
-
-            #view-live > .grid:nth-child(2) {
-                flex: 1 1 auto;
-                min-height: 0;
-            }
-
-            #view-live > .grid:nth-child(2) > div {
-                min-height: 0;
-            }
-
-            #liveFeedList {
-                max-height: none !important;
-                flex: 1 1 auto;
-                min-height: 0;
-            }
-
-            #view-live > .grid:nth-child(2) > div:first-child {
-                min-height: 0;
-            }
-
-            #view-live > .grid:nth-child(2) > div:first-child > div:first-child {
-                display: flex;
-                flex-direction: column;
-                min-height: 0;
-                flex: 1 1 auto;
-            }
-
-            #view-live > .grid:nth-child(2) > div:first-child > div:first-child > div:nth-child(2) {
-                min-height: 0;
-                flex: 1 1 auto;
-            }
-
-            #view-live > .grid:nth-child(2) > div:last-child {
-                min-height: 0;
-            }
-
-            #categoryDonutChart {
-                max-height: 100%;
-            }
-        }
-
-        @media (min-width: 1600px) {
-            #view-live > .grid:first-child {
-                gap: 1.25rem;
-            }
-
-            #view-live > .grid:nth-child(2) {
-                gap: 1.5rem;
-            }
-
-            #view-live > .grid:nth-child(2) > div:first-child {
-                padding: 1.5rem;
-            }
-
-            #liveFeedList {
-                padding-top: 1rem;
-                padding-bottom: 1rem;
-            }
-        }
-
-        /* LIVE DASHBOARD TANPA SCROLL PADA LAYAR DESKTOP */
-        @media (min-width: 1280px) {
-            body:has(#view-live:not(.hidden)) {
-                overflow: hidden !important;
-            }
-
-            body:has(#view-live:not(.hidden)) main {
-                overflow: hidden !important;
-                min-height: 0;
-            }
-
-            #view-live:not(.hidden) {
-                overflow: hidden !important;
-            }
-
-            #liveFeedList {
-                overflow: hidden !important;
-                max-height: none !important;
-            }
-        }
-
-        /* TAB LAYOUT FIX - ADMIN MENU */
-        .tab-view.hidden {
-            display: none !important;
-        }
-
-        main > .tab-view:not(.hidden) {
-            width: 100%;
-        }
-
-        /* Hanya dashboard LIVE yang memakai layout full-screen flex.
-           Menu admin kembali ke layout normal agar tidak turun di bawah feed. */
-        @media (min-width: 1280px) {
-            #view-live:not(.hidden) {
-                display: flex;
-                flex-direction: column;
-            }
-
-            #view-log:not(.hidden),
-            #view-employees:not(.hidden),
-            #view-shifts:not(.hidden),
-            #view-settings:not(.hidden) {
-                display: block !important;
-                height: auto !important;
-                min-height: 0 !important;
-            }
-        }
-
-        /* ===== REFERENCE DASHBOARD LAYOUT ===== */
-        .app-shell { min-height: calc(100vh - 4.25rem); padding-top: 4.25rem; }
-        .app-sidebar { width: 218px; position: fixed; left: 0; top: 4.25rem; bottom: 0; }
-        .sidebar-inner { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-        .app-main { margin-left: 218px; width: calc(100% - 218px); max-width: calc(100% - 218px); min-height: calc(100vh - 4.25rem); height: calc(100vh - 4.25rem); overflow-y: auto; box-sizing: border-box; padding-top: .75rem; }
-        .sidebar-btn { min-height: 42px; }
-        .sidebar-btn.active { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; }
-        .live-upper-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr) minmax(280px, 1fr); gap: 1rem; min-height: 0; }
-        .feed-card, .info-card { min-height: 0; }
-        .feed-list > div { min-height: 0 !important; }
-        .stats-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; }
-        .kpi-icon { width: 44px; height: 44px; border-radius: 14px; display:flex; align-items:center; justify-content:center; flex:0 0 auto; font-size: 1.05rem; }
-        .kpi-label { font-size: .7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .04em; }
-        .kpi-value { margin-top: .1rem; font-size: 1.8rem; line-height: 1; font-weight: 800; color: #0f172a; }
-        .kpi-sub { margin-top: .25rem; font-size: .65rem; color: #64748b; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #categoryDonutChart { width:100% !important; height:100% !important; }
-        #absentList { min-height: 0; }
-        #absentList > div { min-height: 0; }
-        @media (min-width: 1280px) {
-            body:has(#view-live:not(.hidden)) { overflow: hidden !important; }
-            body:has(#view-live:not(.hidden)) .app-main { overflow: hidden; }
-            #view-live:not(.hidden) { height: calc(100vh - 4.25rem); overflow: hidden; }
-            .live-upper-grid { flex: 1 1 auto; min-height: 0; }
-            .feed-card, .info-card { min-height: 0; }
-            .feed-list { min-height: 0; }
-            .donut-wrap { max-height: 250px; }
-        }
-        @media (min-width: 1600px) {
-            .app-main { padding-left: 1.75rem; padding-right: 1.75rem; padding-top: .75rem; }
-            .live-upper-grid, .stats-grid { gap: 1.25rem; }
-        }
-        @media (max-width: 1279px) {
-            .app-sidebar { position: sticky; top: 4.25rem; width: 100%; height: auto; border-right: 0; border-bottom: 1px solid #e2e8f0; }
-            .sidebar-inner { flex-direction: row; overflow-x: auto; align-items: center; padding: .5rem .75rem; }
-            .sidebar-inner > div:first-child, .sidebar-school { display:none; }
-            .sidebar-inner > div:nth-child(2) { display:flex; flex-direction:row; width:100%; overflow-x:auto; }
-            .app-main { margin-left: 0; width: 100%; max-width: 100%; height: calc(100vh - 4.25rem); overflow-y: auto; padding-top: .75rem; }
-            .live-upper-grid { grid-template-columns: 1fr 1fr; }
-            .feed-card { grid-column: 1 / -1; min-height: 420px; }
-            .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
-        @media (max-width: 767px) {
-            .live-upper-grid { grid-template-columns: 1fr; }
-            .feed-card { grid-column: auto; min-height: 420px; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .kpi-value { font-size: 1.6rem; }
-            .app-main { padding: .75rem; padding-top: .75rem; }
-        }
-    
-        /* FINAL LIVE LAYOUT FIX */
-        @media (min-width: 1280px) {
-            .app-main {
-                padding-top: .55rem !important;
-                padding-bottom: .55rem !important;
-            }
-            #view-live:not(.hidden) {
-                height: calc(100vh - 4.25rem - 1.1rem) !important;
-                min-height: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: .75rem !important;
-            }
-            #view-live:not(.hidden) .live-upper-grid {
-                flex: 1 1 auto !important;
-                min-height: 0 !important;
-                height: auto !important;
-            }
-            #view-live:not(.hidden) .stats-grid {
-                flex: 0 0 auto !important;
-                min-height: 0 !important;
-            }
-            #view-live:not(.hidden) .feed-card,
-            #view-live:not(.hidden) .info-card {
-                height: 100% !important;
-                min-height: 0 !important;
-            }
-            #view-live:not(.hidden) .feed-card > div:nth-child(2) {
-                flex: 1 1 auto !important;
-                min-height: 0 !important;
-            }
-            #view-live:not(.hidden) .feed-card > div:last-child {
-                display: block !important;
-                visibility: visible !important;
-                flex: 0 0 auto !important;
-                min-height: 44px !important;
-            }
-            #view-live:not(.hidden) .feed-list {
-                overflow: hidden !important;
-            }
-        }
-
-        /* Active navigation: only the selected menu is blue */
-        .nav-tab-btn.active {
-            background: linear-gradient(135deg, #0284c7, #2563eb) !important;
-            color: #fff !important;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, .12) !important;
-        }
-        .nav-tab-btn:not(.active) {
-            background: transparent !important;
-            color: #475569 !important;
-            box-shadow: none !important;
-        }
-    
-        /* RESPONSIVE SCALING UNTUK MONITOR BESAR */
-        html, body {
-            min-width: 0;
-        }
-
-        /* 1366px: tetap compact */
-        @media (min-width: 1440px) {
-            .app-header .min-h-\[4\.25rem\] {
-                min-height: 4.5rem;
-            }
-            .app-header .w-full {
-                padding-left: 1.75rem;
-                padding-right: 1.75rem;
-            }
-
-            .sidebar {
-                width: 230px !important;
-            }
-            .app-main {
-                margin-left: 230px !important;
-                width: calc(100% - 230px) !important;
-            }
-
-            .live-upper-grid {
-                gap: 1.15rem !important;
-            }
-            .feed-card,
-            .info-card {
-                border-radius: 1.25rem !important;
-            }
-
-            .feed-card .p-4,
-            .info-card .p-4 {
-                padding: 1.05rem !important;
-            }
-
-            .live-feed-row {
-                min-height: 3.05rem;
-            }
-
-            .kpi-value {
-                font-size: 1.45rem;
-            }
-        }
-
-        /* 1600px: sedikit lebih lega */
-        @media (min-width: 1600px) {
-            .sidebar {
-                width: 238px !important;
-            }
-            .app-main {
-                margin-left: 238px !important;
-                width: calc(100% - 238px) !important;
-            }
-
-            .app-header .w-full {
-                padding-left: 2rem;
-                padding-right: 2rem;
-            }
-
-            .live-upper-grid {
-                gap: 1.25rem !important;
-            }
-
-            .live-feed-row {
-                min-height: 3.15rem;
-            }
-
-            .donut-chart-area {
-                padding-top: 22px !important;
-                padding-bottom: 26px !important;
-            }
-
-            .donut-chart-area .donut-wrap {
-                min-height: 190px !important;
-                max-height: 280px !important;
-            }
-
-            .kpi-label {
-                font-size: 0.72rem;
-            }
-        }
-
-        /* 1920x1080: target utama */
-        @media (min-width: 1800px) {
-            .sidebar {
-                width: 250px !important;
-            }
-            .app-main {
-                margin-left: 250px !important;
-                width: calc(100% - 250px) !important;
-            }
-
-            .app-header .w-full {
-                padding-left: 2.35rem;
-                padding-right: 2.35rem;
-            }
-
-            .app-header .min-h-\[4\.25rem\] {
-                min-height: 4.75rem;
-            }
-
-            .live-upper-grid {
-                gap: 1.4rem !important;
-            }
-
-            .feed-card,
-            .info-card {
-                border-radius: 1.35rem !important;
-            }
-
-            .feed-card .p-4,
-            .info-card .p-4 {
-                padding: 1.2rem !important;
-            }
-
-            .live-feed-row {
-                min-height: 3.35rem;
-                font-size: 0.88rem;
-            }
-
-            .donut-chart-area {
-                padding: 26px 12px 30px !important;
-            }
-
-            .donut-chart-area .donut-wrap {
-                min-height: 210px !important;
-                max-height: 300px !important;
-            }
-
-            .kpi-value {
-                font-size: 1.6rem;
-            }
-
-            .kpi-label {
-                font-size: 0.74rem;
-            }
-
-            .kpi-sub {
-                font-size: 0.68rem;
-            }
-
-            .sidebar-btn {
-                padding-top: 0.8rem !important;
-                padding-bottom: 0.8rem !important;
-            }
-        }
-
-        /* Monitor sangat besar: batasi agar tidak terasa raksasa */
-        @media (min-width: 2200px) {
-            .sidebar {
-                width: 260px !important;
-            }
-            .app-main {
-                margin-left: 260px !important;
-                width: calc(100% - 260px) !important;
-            }
-
-            .app-header .w-full {
-                padding-left: 2.75rem;
-                padding-right: 2.75rem;
-            }
-
-            .live-feed-row {
-                min-height: 3.45rem;
-            }
-        }
-
-</style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
-<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
+<body class="h-full text-slate-800 antialiased flex flex-col selection:bg-brand-500 selection:text-white">
 
-    <!-- HEADER -->
-    <header class="app-header bg-white/95 backdrop-blur-md border-b border-slate-200/90 fixed top-0 left-0 right-0 z-40 shadow-sm">
-        <div class="w-full px-5 lg:px-7">
-            <div class="flex items-center justify-between min-h-[4.25rem] gap-4">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 shrink-0">
-                        <i class="fa-solid fa-fingerprint text-xl"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h1 class="font-extrabold text-slate-900 text-base sm:text-xl leading-tight tracking-tight truncate">PresensiLive <span class="text-brand-600">Pro</span></h1>
-                            <span id="bridgeStatusBadge" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> ONLINE
-                            </span>
-                        </div>
-                        <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 hidden sm:block truncate">Integration Bridge • Absensi Realtime</p>
-                    </div>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- Top Header Bar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs shrink-0">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            
+            <!-- Left Side: Brand Logo & Bridge Status -->
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-brand-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 shrink-0">
+                    <i class="fa-solid fa-fingerprint text-xl"></i>
                 </div>
-                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                    <div class="flex items-center gap-2 bg-slate-50 px-3 sm:px-4 py-2 rounded-2xl border border-slate-200/80">
-                        <i class="fa-regular fa-clock text-brand-600 text-sm"></i>
-                        <div class="text-right leading-tight">
-                            <div id="liveClock" class="font-mono font-extrabold text-slate-800 text-xs sm:text-sm whitespace-nowrap">00:00:00 WITA</div>
-                            <div id="liveDate" class="text-[10px] text-slate-500 font-medium hidden sm:block whitespace-nowrap">Memuat...</div>
-                        </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight truncate">PresensiLive <span class="text-brand-600">Pro</span></h1>
+                        
+                        <!-- Lencana Status Bridge Ringkas -->
+                        <span id="bridgeStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 shrink-0">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                            <span class="hidden sm:inline">OFFLINE</span>
+                        </span>
                     </div>
-                    <div id="authHeaderContainer" class="shrink-0">
-                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-10 h-10 flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-all active:scale-95 shadow-sm">
-                            <i class="fa-solid fa-lock text-sm"></i>
-                        </button>
-                    </div>
+                    <p class="text-[11px] text-slate-500 truncate hidden sm:block">Integration Bridge • Absensi Realtime Machine Engine</p>
                 </div>
+            </div>
+
+            <!-- Right Side: Clock, Date & Auth Controls -->
+            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+                
+                <!-- Clock Box -->
+                <div class="hidden md:flex flex-col items-end px-3 py-1 bg-slate-50 border border-slate-200/80 rounded-xl">
+                    <div id="liveClock" class="font-mono font-bold text-xs text-slate-800">00:00:00 WITA</div>
+                    <div id="liveDate" class="text-[10px] text-slate-500 font-medium">-- --- ----</div>
+                </div>
+
+                <!-- Admin Status / Auth Toggle (Ikon Gembok) -->
+                <div id="authHeaderContainer" class="flex items-center">
+                    <button onclick="openLoginModal()" class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 text-white transition-all shadow-sm flex items-center justify-center cursor-pointer" title="Admin Login">
+                        <i class="fa-solid fa-lock text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Admin Mode Controls (Ping, Badge, Logout) -->
+                <div id="adminBadgeContainer" class="hidden items-center gap-2">
+                    <div id="adminBridgePingBox" class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold">
+                        <i class="fa-solid fa-tower-broadcast animate-pulse"></i>
+                        <span id="adminBridgeTime">Ping: -</span>
+                    </div>
+
+                    <span class="px-2.5 py-1 bg-amber-100 border border-amber-200 text-amber-800 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-shield text-amber-600"></i>
+                        <span class="hidden sm:inline">Admin Mode</span>
+                    </span>
+                    <button onclick="handleLogout()" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors" title="Logout Admin">
+                        <i class="fa-solid fa-right-from-bracket text-sm"></i>
+                    </button>
+                </div>
+
             </div>
         </div>
     </header>
 
-    <!-- APP SHELL -->
-    <div class="app-shell">
-        <!-- SIDEBAR / NAVIGATION -->
-        <nav class="app-sidebar bg-white border-r border-slate-200/90 z-30">
-            <div class="sidebar-inner px-3 py-4">
-                <div class="px-3 mb-4">
-                    <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-400">Monitoring</p>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn sidebar-btn active flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all bg-brand-600 text-white shadow-sm whitespace-nowrap">
-                        <i class="fa-solid fa-desktop w-5 text-center"></i><span>Dashboard Live</span>
-                    </button>
-                    <button onclick="switchTab('log')" id="tabBtn-log" class="nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-list-check w-5 text-center"></i><span>Log Realtime</span>
-                    </button>
-                    <button onclick="switchTab('employees')" id="tabBtn-employees" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-users w-5 text-center"></i><span>Personel</span>
-                    </button>
-                    <button onclick="switchTab('shifts')" id="tabBtn-shifts" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-calendar-days w-5 text-center"></i><span>Shift Kerja</span>
-                    </button>
-                    <button onclick="switchTab('settings')" id="tabBtn-settings" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-sliders w-5 text-center"></i><span>Pengaturan</span>
-                    </button>
-                    <button onclick="exportToExcel()" class="admin-only hidden sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-50 whitespace-nowrap">
-                        <i class="fa-solid fa-file-excel w-5 text-center text-emerald-600"></i><span>Unduh Excel</span>
-                    </button>
-                </div>
-
-                <div class="sidebar-school mt-auto pt-6 px-3">
-                    <div class="h-px bg-slate-100 mb-4"></div>
-                    <div class="flex items-center gap-2.5">
-                        <div class="min-w-0">
-                            <p class="font-extrabold text-slate-900 text-[11px] truncate">SMPN 3 MAKASSAR</p>
-                            <p class="text-[10px] text-slate-500 truncate">Monitoring Absensi</p>
-                        </div>
-                    </div>
-                    <div id="adminBadgeContainer" class="hidden mt-3">
-                        <div class="flex items-center justify-between gap-2 px-2.5 py-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[10px] font-semibold">
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-amber-600"></i><span>Admin Mode</span></span>
-                            <button onclick="handleLogout()" class="p-1 hover:bg-amber-200/60 rounded-md text-amber-700"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                        <div id="adminBridgePingBox" class="hidden mt-2 sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold">
-                            <i class="fa-solid fa-network-wired"></i><span id="adminBridgeTime">-</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- Main Navigation Bar -->
+    <nav class="bg-white border-b border-slate-200 shrink-0">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-1 py-2 overflow-x-auto no-scrollbar">
+                <button id="tabBtn-live" onclick="switchTab('live')" class="nav-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-xs transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer">
+                    <i class="fa-solid fa-chart-line"></i> Dasbor Live
+                </button>
+                <button id="tabBtn-log" onclick="switchTab('log')" class="nav-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer">
+                    <i class="fa-solid fa-list-check"></i> Log Realtime
+                </button>
+                
+                <!-- Navigasi khusus Admin -->
+                <button id="tabBtn-employees" onclick="switchTab('employees')" class="nav-tab-btn admin-only hidden px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer">
+                    <i class="fa-solid fa-users"></i> Data Personel
+                </button>
+                <button id="tabBtn-shifts" onclick="switchTab('shifts')" class="nav-tab-btn admin-only hidden px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer">
+                    <i class="fa-solid fa-calendar-days"></i> Shift Kerja
+                </button>
+                <button id="tabBtn-settings" onclick="switchTab('settings')" class="nav-tab-btn admin-only hidden px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer">
+                    <i class="fa-solid fa-sliders"></i> Pengaturan
+                </button>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <!-- MAIN CONTENT -->
-        <main class="app-main flex-1 w-full px-4 sm:px-6 xl:px-7 py-4 sm:py-5">
-        <!-- TAB LIVE -->
-        <section id="view-live" class="tab-view dashboard-live space-y-4 sm:space-y-5">
-            <!-- UPPER MONITORING AREA -->
-            <div class="live-upper-grid">
-                <!-- FEED REALTIME -->
-                <div class="feed-card glass-card rounded-2xl shadow-sm flex flex-col min-h-0">
-                    <div class="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-slate-100 shrink-0">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-live"></span>
-                            <h2 class="font-extrabold text-slate-900 text-sm sm:text-base">Feed Absensi Realtime</h2>
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-[1600px] w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 overflow-y-auto">
+
+        <!-- VIEW: DASBOR LIVE -->
+        <section id="view-live" class="tab-view space-y-6">
+            
+            <!-- 4 Kartu Statistik Ringkasan Utama -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Kartu Total Personel -->
+                <div class="glass-card rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-extrabold tracking-wider text-slate-500 uppercase">Total Personel</p>
+                            <h3 id="statTotalEmp" class="text-3xl font-extrabold text-slate-900 mt-1">0</h3>
                         </div>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Live</span>
+                        <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
                     </div>
-                    <div id="liveFeedList" class="feed-list flex-1 min-h-0 overflow-hidden px-4 sm:px-5 py-2 space-y-1.5"></div>
-                    <div class="px-4 sm:px-5 pb-3 pt-2 border-t border-slate-100 shrink-0">
-                        <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors flex items-center justify-center gap-1.5 w-full py-2 rounded-xl hover:bg-brand-50">
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Lihat Selengkapnya di Log Realtime <i class="fa-solid fa-arrow-right text-xs"></i>
+                    <p class="text-xs text-slate-500 font-medium mt-3">Guru, Staf, Keamanan, Kebersihan</p>
+                </div>
+
+                <!-- Kartu Hadir Hari Ini -->
+                <div class="glass-card rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-extrabold tracking-wider text-slate-500 uppercase">Hadir Hari Ini</p>
+                            <h3 id="statPresentToday" class="text-3xl font-extrabold text-emerald-600 mt-1">0</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                    </div>
+                    <p id="statPresentSub" class="text-xs text-emerald-600 font-medium mt-3">0% dari total personel</p>
+                </div>
+
+                <!-- Kartu Terlambat -->
+                <div class="glass-card rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-extrabold tracking-wider text-slate-500 uppercase">Terlambat</p>
+                            <h3 id="statLateToday" class="text-3xl font-extrabold text-amber-600 mt-1">0</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-amber-600 font-medium mt-3">Melewati toleransi</p>
+                </div>
+
+                <!-- Kartu Belum Masuk -->
+                <div class="glass-card rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-extrabold tracking-wider text-slate-500 uppercase">Belum Masuk</p>
+                            <h3 id="statAbsentToday" class="text-3xl font-extrabold text-rose-600 mt-1">0</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-user-xmark"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-rose-600 font-medium mt-3">Belum melakukan tap</p>
+                </div>
+
+            </div>
+
+            <!-- Grid Utama Layout: Column Kiri (Feed) & Column Kanan (Grafik + Rules) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                
+                <!-- Kolom Kiri: Feed Absensi Realtime -->
+                <div class="lg:col-span-2 glass-card rounded-2xl p-5 shadow-xs flex flex-col min-h-[500px] lg:min-h-[600px] xl:min-h-[700px]">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Feed Absensi Realtime</h3>
+                        </div>
+                    </div>
+
+                    <!-- Container Daftar Feed Live -->
+                    <div id="liveFeedList" class="divide-y divide-slate-100 flex-1 overflow-y-auto py-2 space-y-2 pr-1">
+                        <div class="text-center py-12 text-slate-400 font-medium text-xs">
+                            <i class="fa-solid fa-spinner fa-spin text-xl mb-2 text-brand-500"></i>
+                            <p>Memuat pindaian absensi hari ini...</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer Link Ke Log Realtime -->
+                    <div class="pt-3 border-t border-slate-100 text-center shrink-0">
+                        <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline inline-flex items-center gap-1.5 cursor-pointer">
+                            <span>Lihat Selengkapnya di Log Realtime</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- HADIR HARI INI -->
-                <div class="info-card glass-card rounded-2xl p-3.5 sm:p-4 shadow-sm flex flex-col min-h-0 overflow-hidden">
-                    <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 shrink-0">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 shrink-0"></span>
-                            <h3 class="font-extrabold text-slate-900 text-sm truncate">Hadir Hari Ini</h3>
+                <!-- Kolom Kanan: Grafik Hadir Hari Ini & Info Aturan Jam Kerja -->
+                <div class="space-y-6 flex flex-col h-full">
+                    
+                    <!-- Grafik Hadir Hari Ini (Bar Chart) -->
+                    <div class="glass-card rounded-2xl p-5 shadow-xs flex-1 flex flex-col">
+                        <h3 class="font-bold text-slate-900 text-sm mb-3 shrink-0">Hadir Hari Ini</h3>
+                        <div class="relative flex-1 min-h-[250px] flex items-center justify-center p-2">
+                            <canvas id="categoryBarChart"></canvas>
                         </div>
-                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase shrink-0">Personel</span>
                     </div>
-                    <div class="flex-1 min-h-0 flex flex-col">
-                        <div class="donut-chart-area">
-                            <div class="donut-wrap relative flex items-center justify-center mx-auto max-w-[250px]">
-                                <canvas id="categoryDonutChart"></canvas>
+
+                    <!-- Info Aturan Jam Kerja -->
+                    <div class="glass-card rounded-2xl p-5 shadow-xs bg-gradient-to-br from-white to-slate-50 shrink-0">
+                        <h3 class="font-bold text-slate-900 text-sm mb-3">Info Aturan Jam Kerja</h3>
+                        <div class="space-y-2.5 text-xs">
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-100/70 border border-slate-200/60">
+                                <span class="font-medium text-slate-600">Jam Masuk Standar</span>
+                                <span id="displayStdIn" class="font-mono font-extrabold text-emerald-600">07:30 WITA</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-100/70 border border-slate-200/60">
+                                <span class="font-medium text-slate-600">Jam Pulang Standar</span>
+                                <span id="displayStdOut" class="font-mono font-extrabold text-brand-600">16:00 WITA</span>
                             </div>
                         </div>
-                        <div class="mt-auto pt-3 grid grid-cols-2 gap-1.5 text-[9px] sm:text-[10px] font-bold shrink-0">
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#0ea5e9]"></span><span class="text-slate-600 truncate">Guru</span></span></div>
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#6366f1]"></span><span class="text-slate-600 truncate">Pegawai</span></span></div>
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span><span class="text-slate-600 truncate">Keamanan</span></span></div>
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span><span class="text-slate-600 truncate">Kebersihan</span></span></div>
-                        </div>
                     </div>
+
                 </div>
 
-                <!-- BELUM MASUK -->
-                <div class="info-card glass-card rounded-2xl p-3.5 sm:p-4 shadow-sm flex flex-col min-h-0 overflow-hidden">
-                    <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 shrink-0">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
-                            <h3 class="font-extrabold text-slate-900 text-sm truncate">Belum Masuk</h3>
-                        </div>
-                        <span id="absentListCount" class="min-w-7 h-5 px-1.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 text-[9px] font-extrabold flex items-center justify-center shrink-0">0</span>
-                    </div>
-                    <div id="absentList" class="flex-1 min-h-0 overflow-hidden pt-1"></div>
-                </div>
             </div>
 
-            <!-- KPI AREA -->
-            <div class="stats-grid">
-                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
-                    <div class="kpi-icon bg-brand-50 text-brand-600"><i class="fa-solid fa-user-group"></i></div>
-                    <div class="min-w-0"><p class="kpi-label">Total Personel</p><h3 id="statTotalEmp" class="kpi-value">0</h3><p class="kpi-sub">Semua personel aktif</p></div>
-                </div>
-                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
-                    <div class="kpi-icon bg-emerald-50 text-emerald-600"><i class="fa-solid fa-user-check"></i></div>
-                    <div class="min-w-0"><p class="kpi-label">Hadir Hari Ini</p><h3 id="statPresentToday" class="kpi-value text-emerald-600">0</h3><p id="statPresentSub" class="kpi-sub text-emerald-600">0% dari total personel</p></div>
-                </div>
-                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
-                    <div class="kpi-icon bg-amber-50 text-amber-500"><i class="fa-solid fa-clock"></i></div>
-                    <div class="min-w-0"><p class="kpi-label">Terlambat</p><h3 id="statLateToday" class="kpi-value text-amber-500">0</h3><p class="kpi-sub text-amber-600">Melewati toleransi</p></div>
-                </div>
-                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
-                    <div class="kpi-icon bg-rose-50 text-rose-500"><i class="fa-solid fa-user-xmark"></i></div>
-                    <div class="min-w-0"><p class="kpi-label">Belum Masuk</p><h3 id="statAbsentToday" class="kpi-value text-rose-500">0</h3><p class="kpi-sub text-rose-500">Belum tap hari ini</p></div>
-                </div>
-                <div class="glass-card rounded-2xl p-3 flex items-center gap-2.5 shadow-sm">
-                    <div class="kpi-icon bg-indigo-50 text-indigo-600 w-8 h-8 text-xs"><i class="fa-solid fa-clock"></i></div>
-                    <div class="min-w-0"><p class="kpi-label text-[10px]">Jam Standar</p><h3 class="kpi-value text-slate-900 text-base sm:text-lg leading-tight"><span id="displayStdIn">-</span> - <span id="displayStdOut">-</span></h3><p class="kpi-sub text-[9px]">Jam kerja hari ini</p></div>
-                </div>
-            </div>
         </section>
 
-        <!-- TAB LOG -->
-        <section id="view-log" class="tab-view hidden space-y-4">
-            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
-                    <div>
-                        <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Log Riwayat Absensi Realtime</h2>
+        <!-- VIEW: LOG REALTIME -->
+        <section id="view-log" class="tab-view space-y-4 hidden">
+            <div class="glass-card rounded-2xl p-5 shadow-xs space-y-4">
+                
+                <!-- Toolbar Atas Tabel Log -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    <div class="relative flex-1 max-w-md">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="logSearchInput" onkeyup="filterLogTable()" placeholder="Cari nama, NIP, atau status..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all">
                     </div>
-                    <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-                        <input type="text" id="logSearchInput" onkeyup="filterLogTable()" placeholder="Cari NIP/Nama..." class="w-full sm:w-auto px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
-                        <button onclick="openManualAttendanceModal()" class="admin-only hidden px-3.5 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-all"><i class="fa-solid fa-plus"></i> Input Manual</button>
-                        <button onclick="openImportMachineModal()" class="admin-only hidden px-3.5 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all"><i class="fa-solid fa-file-import"></i> Tarik Data Mesin</button>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="exportToExcel()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-file-excel"></i>
+                            <span>Export Excel</span>
+                        </button>
+                        <button onclick="openManualAttendanceModal()" class="admin-only hidden px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Input Manual</span>
+                        </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto mt-4 rounded-xl border border-slate-200/80 touch-scroll">
-                    <table class="w-full text-left text-xs text-slate-700 whitespace-nowrap min-w-[640px]">
-                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
+
+                <!-- Table Container Log -->
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold uppercase tracking-wider text-[10px]">
                             <tr>
-                                <th class="p-3">Waktu Tap</th>
-                                <th class="p-3">Personel</th>
+                                <th class="p-3">Waktu Pindaian</th>
+                                <th class="p-3">Nama Personel</th>
                                 <th class="p-3">NIP</th>
-                                <th class="p-3">Kategori & Jabatan</th>
-                                <th class="p-3">Tipe Tap</th>
+                                <th class="p-3">Kategori / Peran</th>
+                                <th class="p-3">Tipe</th>
                                 <th class="p-3">Status</th>
-                                <th class="p-3 text-right admin-only hidden">Aksi</th>
+                                <th class="p-3 text-right admin-only">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="logTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
+                        <tbody id="logTableBody" class="divide-y divide-slate-100">
+                            <tr><td colspan="7" class="text-center py-8 text-slate-400 font-medium">Memuat riwayat log...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- TAB EMPLOYEES -->
-        <section id="view-employees" class="tab-view hidden space-y-4">
-            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 pb-4 border-b border-slate-200">
-                    <div>
-                        <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Manajemen Personel</h2>
+        <!-- VIEW: DATA PERSONEL (ADMIN ONLY) -->
+        <section id="view-employees" class="tab-view space-y-4 hidden">
+            <div class="glass-card rounded-2xl p-5 shadow-xs space-y-4">
+                
+                <!-- Filter Kategori & Tombol Tambah -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    
+                    <!-- Filter Kategori Karyawan -->
+                    <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+                        <button data-cat="ALL" onclick="setEmpCategoryFilter('ALL')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-md transition-all cursor-pointer">Semua</button>
+                        <button data-cat="GURU" onclick="setEmpCategoryFilter('GURU')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer">Guru</button>
+                        <button data-cat="PEGAWAI" onclick="setEmpCategoryFilter('PEGAWAI')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer">Pegawai</button>
+                        <button data-cat="KEAMANAN" onclick="setEmpCategoryFilter('KEAMANAN')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer">Keamanan</button>
+                        <button data-cat="KEBERSIHAN" onclick="setEmpCategoryFilter('KEBERSIHAN')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer">Kebersihan</button>
                     </div>
-                    <div class="flex items-center gap-1.5 flex-wrap w-full lg:w-auto">
-                        <button onclick="setEmpCategoryFilter('ALL')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition-all" data-cat="ALL">Semua</button>
-                        <button onclick="setEmpCategoryFilter('GURU')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="GURU">Guru</button>
-                        <button onclick="setEmpCategoryFilter('PEGAWAI')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="PEGAWAI">Pegawai</button>
-                        <button onclick="setEmpCategoryFilter('KEAMANAN')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="KEAMANAN">Keamanan</button>
-                        <button onclick="setEmpCategoryFilter('KEBERSIHAN')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="KEBERSIHAN">Kebersihan</button>
-                        <button onclick="openEmployeeModal()" class="px-3.5 py-1.5 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-xs transition-all ml-auto lg:ml-0"><i class="fa-solid fa-plus"></i> Tambah</button>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="openEmployeeModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>Tambah Personel</span>
+                        </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto mt-4 rounded-xl border border-slate-200/80 touch-scroll">
-                    <table class="w-full text-left text-xs text-slate-700 whitespace-nowrap min-w-[640px]">
-                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
+
+                <!-- Tabel Personel -->
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold uppercase tracking-wider text-[10px]">
                             <tr>
-                                <th class="p-3">Personel</th>
+                                <th class="p-3">Nama Personel</th>
                                 <th class="p-3">NIP</th>
-                                <th class="p-3">Mesin PIN</th>
+                                <th class="p-3">ID Mesin</th>
                                 <th class="p-3">Kategori</th>
-                                <th class="p-3">Jabatan</th>
-                                <th class="p-3">Shift</th>
+                                <th class="p-3">Jabatan / Role</th>
+                                <th class="p-3">Shift Kerja</th>
                                 <th class="p-3 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="employeeTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
+                        <tbody id="employeeTableBody" class="divide-y divide-slate-100">
+                            <tr><td colspan="7" class="text-center py-8 text-slate-400 font-medium">Memuat data personel...</td></tr>
+                        </tbody>
                     </table>
                 </div>
+
             </div>
         </section>
 
-        <!-- TAB SHIFTS -->
-        <section id="view-shifts" class="tab-view hidden space-y-4">
-            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs">
-                <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-                    <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Manajemen Shift Kerja</h2>
-                    <button onclick="openShiftModal()" class="px-3.5 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-all"><i class="fa-solid fa-plus"></i> Tambah Shift</button>
+        <!-- VIEW: SHIFT KERJA (ADMIN ONLY) -->
+        <section id="view-shifts" class="tab-view space-y-4 hidden">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-base">Manajemen Shift Kerja</h3>
+                    <p class="text-xs text-slate-500">Atur jam kerja dan skema hari untuk masing-masing kelompok pegawai</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4" id="shiftsGrid"></div>
+                <button onclick="openShiftModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Tambah Shift</span>
+                </button>
+            </div>
+
+            <!-- Grid Kartu Shift -->
+            <div id="shiftsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="col-span-full text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                    <p class="font-bold text-slate-500 text-sm">Memuat data shift...</p>
+                </div>
             </div>
         </section>
 
-        <!-- TAB SETTINGS -->
-        <section id="view-settings" class="tab-view hidden space-y-6">
-            <div class="glass-card rounded-2xl p-4 sm:p-6 shadow-xs">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
-                    <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Daftar Skema Waktu Kerja</h2>
-                    <button onclick="openTimeSchemeModal()" class="px-4 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-all"><i class="fa-solid fa-plus"></i> Tambah Skema</button>
+        <!-- VIEW: PENGATURAN (ADMIN ONLY) -->
+        <section id="view-settings" class="tab-view space-y-6 hidden">
+            
+            <!-- Pengaturan Skema Waktu -->
+            <div class="glass-card rounded-2xl p-5 shadow-xs space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base">Skema Toleransi Jam Kerja</h3>
+                        <p class="text-xs text-slate-500">Definisikan aturan keterlambatan dan rentang waktu scan masuk/pulang</p>
+                    </div>
+                    <button onclick="openTimeSchemeModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Tambah Skema</span>
+                    </button>
                 </div>
-                <div class="overflow-x-auto mt-4 rounded-xl border border-slate-200/80 touch-scroll">
-                    <table class="w-full text-left text-xs text-slate-700 whitespace-nowrap min-w-[640px]">
-                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
+
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold uppercase tracking-wider text-[10px]">
                             <tr>
                                 <th class="p-3">Nama Skema</th>
-                                <th class="p-3">Jam Kerja</th>
-                                <th class="p-3">Toleransi</th>
-                                <th class="p-3">Window Scan</th>
+                                <th class="p-3">Jam Masuk - Pulang</th>
+                                <th class="p-3">Toleransi (In/Out)</th>
+                                <th class="p-3">Jendela Scan</th>
                                 <th class="p-3">Keterangan</th>
                                 <th class="p-3 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="timeSchemesTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
+                        <tbody id="timeSchemesTableBody" class="divide-y divide-slate-100">
+                            <tr><td colspan="6" class="text-center py-8 text-slate-400 font-medium">Memuat skema waktu...</td></tr>
+                        </tbody>
                     </table>
                 </div>
-                <div class="mt-6 pt-4 border-t border-slate-200 bg-slate-50/70 p-4 rounded-2xl">
-                    <h3 class="font-bold text-slate-800 text-xs mb-3">Opsi Notifikasi</h3>
-                    <form onsubmit="handleSaveTimeRules(event)" class="space-y-3 text-xs">
-                        <div class="flex gap-4 flex-wrap">
-                            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700"><input type="checkbox" id="inputAutoPopup" class="rounded text-brand-600"> Pop-up Realtime</label>
-                            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700"><input type="checkbox" id="inputPlaySound" class="rounded text-brand-600"> Bunyikan Lonceng</label>
-                        </div>
-                        <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-all">Simpan Opsi</button>
-                    </form>
-                </div>
             </div>
+
+            <!-- Opsi Suara & Pop-up Live -->
+            <div class="glass-card rounded-2xl p-5 shadow-xs space-y-4 max-w-xl">
+                <h3 class="font-extrabold text-slate-900 text-base pb-2 border-b border-slate-100">Opsi Display Live Popup</h3>
+                <form onsubmit="handleSaveTimeRules(event)" class="space-y-4">
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200 cursor-pointer">
+                        <div class="space-y-0.5">
+                            <span class="text-xs font-bold text-slate-800">Popup Animasi Pindaian</span>
+                            <p class="text-[11px] text-slate-500">Tampilkan popup otomatis saat mesin melakukan scan</p>
+                        </div>
+                        <input type="checkbox" id="inputAutoPopup" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                    </label>
+
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200 cursor-pointer">
+                        <div class="space-y-0.5">
+                            <span class="text-xs font-bold text-slate-800">Bunyi Chime Bel</span>
+                            <p class="text-[11px] text-slate-500">Putar nada bel pindaian saat pindaian baru masuk</p>
+                        </div>
+                        <input type="checkbox" id="inputPlaySound" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                    </label>
+
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all">Simpan Pengaturan Display</button>
+                </form>
+            </div>
+
         </section>
 
     </main>
 
-    <!-- POPUP & MODALS -->
-    <!-- LIVE POPUP -->
-    <div id="livePopupOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden transition-all">
-        <div id="livePopupCard" class="bg-white rounded-3xl p-6 shadow-2xl max-w-sm w-full text-center relative overflow-hidden scale-90 opacity-0 transition-all">
-            <div class="absolute top-0 left-0 right-0 h-1.5 bg-slate-100"><div id="popupProgressBar" class="h-full bg-brand-500 w-full transition-all ease-linear"></div></div>
-            <button onclick="dismissPopup()" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
-            <div class="mt-4 mb-3"><img id="popupAvatar" src="" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-white shadow-xl"></div>
-            <div>
-                <span id="popupTime" class="px-3 py-1 bg-slate-100 font-mono font-extrabold text-xs rounded-full"></span>
-                <h3 id="popupName" class="font-black text-slate-900 text-base mt-2 truncate"></h3>
-                <p id="popupNip" class="text-xs text-slate-500 font-mono"></p>
-                <div id="popupStatusContainer" class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-center">
-                    <span id="popupStatusText" class="px-3.5 py-1.5 rounded-full text-xs font-extrabold"></span>
+    <!-- MODAL: LOGIN ADMIN -->
+    <div id="loginModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="glass-card bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-5 border border-slate-200">
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 mx-auto flex items-center justify-center text-xl shadow-inner">
+                    <i class="fa-solid fa-user-shield"></i>
                 </div>
+                <h3 class="font-extrabold text-slate-900 text-base">Login Otentikasi Admin</h3>
+                <p class="text-xs text-slate-500">Masukkan akun terverifikasi untuk mengelola sistem</p>
             </div>
+
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Username</label>
+                    <input type="text" id="loginUsername" required class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" id="loginPassword" required class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 pr-10">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i id="loginPasswordEye" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="loginErrorMsg" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-bold text-center">
+                    Username atau password salah!
+                </div>
+
+                <div class="flex items-center gap-2 pt-2">
+                    <button type="button" onclick="closeLoginModal()" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all">Batal</button>
+                    <button type="submit" class="flex-1 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition-all shadow-md">Masuk</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- MODAL MANUAL ATTENDANCE -->
-    <div id="manualAttendanceModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                <h3 id="manualModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-user-pen text-brand-600"></i> Input Absensi</h3>
-                <button onclick="closeManualAttendanceModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="handleManualAttendanceSubmit(event)" class="mt-4 space-y-3 text-xs">
+    <!-- MODAL: MANUAL ATTENDANCE LOG -->
+    <div id="manualAttendanceModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="glass-card bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+            <h3 id="manualModalTitle" class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                <i class="fa-solid fa-user-pen text-brand-600"></i> Input Manual
+            </h3>
+            <form onsubmit="handleManualAttendanceSubmit(event)" class="space-y-3">
                 <input type="hidden" id="manualLogOriginalKey">
                 <div>
-                    <label class="block font-semibold mb-1">Personel</label>
-                    <select id="manualEmpId" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"></select>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block font-semibold mb-1">Tanggal</label><input type="date" id="manualDate" required class="w-full px-3 py-2 border border-slate-200 rounded-xl font-mono focus:ring-2 focus:ring-brand-500 focus:outline-none"></div>
-                    <div><label class="block font-semibold mb-1">Jam</label><input type="time" id="manualTime" required class="w-full px-3 py-2 border border-slate-200 rounded-xl font-mono focus:ring-2 focus:ring-brand-500 focus:outline-none"></div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Personel</label>
+                    <select id="manualEmpId" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brand-500/20"></select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-semibold mb-1">Tipe Tap</label>
-                        <select id="manualType" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"><option value="MASUK">MASUK</option><option value="PULANG">PULANG</option></select>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Tanggal</label>
+                        <input type="date" id="manualDate" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
                     </div>
                     <div>
-                        <label class="block font-semibold mb-1">Status</label>
-                        <select id="manualStatus" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"><option value="HADIR">HADIR</option><option value="TERLAMBAT">TERLAMBAT</option><option value="PULANG CEPAT">PULANG CEPAT</option><option value="LUPA ABSENSI">LUPA ABSENSI</option><option value="IZIN">IZIN</option><option value="SAKIT">SAKIT</option></select>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Waktu</label>
+                        <input type="time" id="manualTime" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
                     </div>
                 </div>
-                <div><label class="block font-semibold mb-1">Catatan</label><input type="text" id="manualNote" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"></div>
-                <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeManualAttendanceModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 font-bold rounded-xl transition-all">Batal</button>
-                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all">Simpan</button>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Tipe Pindaian</label>
+                        <select id="manualType" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                            <option value="MASUK">MASUK</option>
+                            <option value="PULANG">PULANG</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Status Kehadiran</label>
+                        <select id="manualStatus" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                            <option value="HADIR">HADIR</option>
+                            <option value="TERLAMBAT">TERLAMBAT</option>
+                            <option value="PULANG CEPAT">PULANG CEPAT</option>
+                            <option value="IZIN">IZIN</option>
+                            <option value="SAKIT">SAKIT</option>
+                            <option value="LUPA ABSENSI">LUPA ABSENSI</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Catatan / Keterangan</label>
+                    <input type="text" id="manualNote" placeholder="Opsional..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                    <button type="button" onclick="closeManualAttendanceModal()" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Batal</button>
+                    <button type="submit" class="flex-1 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md">Simpan Log</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL TIME SCHEME -->
-    <div id="timeSchemeModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                <h3 id="timeSchemeModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-clock text-brand-600"></i> Skema Waktu</h3>
-                <button onclick="closeTimeSchemeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="handleTimeSchemeSubmit(event)" class="mt-4 space-y-3 text-xs">
-                <input type="hidden" id="schemeModalId">
-                <div><label class="block font-semibold mb-1">Nama Skema</label><input type="text" id="schemeModalName" required class="w-full px-3 py-2 border rounded-xl"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block font-semibold mb-1">Jam Masuk</label><input type="time" id="schemeModalStart" required class="w-full px-3 py-2 border rounded-xl"></div>
-                    <div><label class="block font-semibold mb-1">Jam Pulang</label><input type="time" id="schemeModalEnd" required class="w-full px-3 py-2 border rounded-xl"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block font-semibold mb-1">Toleransi Terlambat (Mnt)</label><input type="number" id="schemeModalTolMin" required class="w-full px-3 py-2 border rounded-xl"></div>
-                    <div><label class="block font-semibold mb-1">Toleransi Pulang Cepat (Mnt)</label><input type="number" id="schemeModalTolEarly" required class="w-full px-3 py-2 border rounded-xl"></div>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border space-y-2">
-                    <span class="font-extrabold text-[11px] text-slate-800">Batas Window Scan:</span>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[10px] text-slate-600">Scan Masuk Mulai</label><input type="time" id="schemeModalScanInStart" required class="w-full px-2 py-1.5 border rounded-lg"></div>
-                        <div><label class="block text-[10px] text-slate-600">Scan Masuk Akhir</label><input type="time" id="schemeModalScanInEnd" required class="w-full px-2 py-1.5 border rounded-lg"></div>
-                        <div><label class="block text-[10px] text-slate-600">Scan Pulang Mulai</label><input type="time" id="schemeModalScanOutStart" required class="w-full px-2 py-1.5 border rounded-lg"></div>
-                        <div><label class="block text-[10px] text-slate-600">Scan Pulang Akhir</label><input type="time" id="schemeModalScanOutEnd" required class="w-full px-2 py-1.5 border rounded-lg"></div>
-                    </div>
-                </div>
-                <div><label class="block font-semibold mb-1">Keterangan</label><input type="text" id="schemeModalDesc" class="w-full px-3 py-2 border rounded-xl"></div>
-                <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeTimeSchemeModal()" class="w-1/2 py-2.5 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Batal</button>
-                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL EMPLOYEE -->
-    <div id="employeeModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                <h3 id="empModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-user-plus text-brand-600"></i> Personel</h3>
-                <button onclick="closeEmployeeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="handleEmployeeSubmit(event)" class="mt-4 space-y-3 text-xs">
+    <!-- MODAL: PERSONEL (ADD / EDIT) -->
+    <div id="employeeModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="glass-card bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+            <h3 class="font-extrabold text-slate-900 text-base">Form Data Personel</h3>
+            <form onsubmit="handleEmployeeSubmit(event)" class="space-y-3">
                 <input type="hidden" id="empModalId">
-                <div><label class="block font-semibold mb-1">Nama Lengkap</label><input type="text" id="empModalName" required class="w-full px-3 py-2 border rounded-xl"></div>
-                <div><label class="block font-semibold mb-1">Nama di Mesin</label><input type="text" id="empModalMachineName" class="w-full px-3 py-2 border rounded-xl"></div>
-                <div><label class="block font-semibold mb-1">NIP / PIN</label><input type="text" id="empModalNip" class="w-full px-3 py-2 border rounded-xl"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block font-semibold mb-1">Kategori</label><select id="empModalCat" class="w-full px-3 py-2 border rounded-xl"><option value="GURU">GURU</option><option value="PEGAWAI">PEGAWAI</option><option value="KEAMANAN">KEAMANAN</option><option value="KEBERSIHAN">KEBERSIHAN</option></select></div>
-                    <div><label class="block font-semibold mb-1">Shift</label><select id="empModalShift" class="w-full px-3 py-2 border rounded-xl"></select></div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Lengkap & Gelar</label>
+                    <input type="text" id="empModalName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
                 </div>
-                <div><label class="block font-semibold mb-1">Jabatan</label><input type="text" id="empModalRole" class="w-full px-3 py-2 border rounded-xl"></div>
-                <div><label class="block font-semibold mb-1">Foto URL</label><input type="url" id="empModalPhoto" class="w-full px-3 py-2 border rounded-xl"></div>
-                <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeEmployeeModal()" class="w-1/2 py-2.5 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Batal</button>
-                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl">Simpan</button>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">ID Mesin / Mesin Name</label>
+                        <input type="text" id="empModalMachineName" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">NIP / NIK</label>
+                        <input type="text" id="empModalNip" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Kategori</label>
+                        <select id="empModalCat" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                            <option value="GURU">GURU</option>
+                            <option value="PEGAWAI">PEGAWAI</option>
+                            <option value="KEAMANAN">KEAMANAN</option>
+                            <option value="KEBERSIHAN">KEBERSIHAN</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Shift Kerja</label>
+                        <select id="empModalShift" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"></select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Jabatan / Role</label>
+                        <input type="text" id="empModalRole" placeholder="Contoh: Guru Matematika" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">URL Foto (Opsional)</label>
+                        <input type="url" id="empModalPhoto" placeholder="https://..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                    <button type="button" onclick="closeEmployeeModal()" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Batal</button>
+                    <button type="submit" class="flex-1 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md">Simpan Personel</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL SHIFT -->
-    <div id="shiftModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                <h3 id="shiftModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-calendar-plus text-brand-600"></i> Shift Kerja</h3>
-                <button onclick="closeShiftModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="handleShiftSubmit(event)" class="mt-4 space-y-3 text-xs">
+    <!-- MODAL: SHIFT KERJA -->
+    <div id="shiftModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="glass-card bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+            <h3 class="font-extrabold text-slate-900 text-base">Form Shift Kerja</h3>
+            <form onsubmit="handleShiftSubmit(event)" class="space-y-3">
                 <input type="hidden" id="shiftModalId">
-                <div><label class="block font-semibold mb-1">Nama Shift</label><input type="text" id="shiftModalName" required class="w-full px-3 py-2 border rounded-xl"></div>
                 <div>
-                    <label class="block font-bold mb-1.5">Hari Aktif</label>
-                    <div class="grid grid-cols-7 gap-1 text-center" id="shiftDaysContainer">
-                        <label class="cursor-pointer"><input type="checkbox" value="Sen" class="shift-day-cb hidden peer" checked><span class="block py-1.5 rounded-lg border text-[10px] font-bold peer-checked:bg-brand-600 peer-checked:text-white">Sen</span></label>
-                        <label class="cursor-pointer"><input type="checkbox" value="Sel" class="shift-day-cb hidden peer" checked><span class="block py-1.5 rounded-lg border text-[10px] font-bold peer-checked:bg-brand-600 peer-checked:text-white">Sel</span></label>
-                        <label class="cursor-pointer"><input type="checkbox" value="Rab" class="shift-day-cb hidden peer" checked><span class="block py-1.5 rounded-lg border text-[10px] font-bold peer-checked:bg-brand-600 peer-checked:text-white">Rab</span></label>
-                        <label class="cursor-pointer"><input type="checkbox" value="Kam" class="shift-day-cb hidden peer" checked><span class="block py-1.5 rounded-lg border text-[10px] font-bold peer-checked:bg-brand-600 peer-checked:text-white">Kam</span></label>
-                        <label class="cursor-pointer"><input type="checkbox" value="Jum" class="shift-day-cb hidden peer" checked><span class="block py-1.5 rounded-lg border text-[10px] font-bold peer-checked:bg-brand-600 peer-checked:text-white">Jum</span></label>
-                        <label class="cursor-pointer"><input type="checkbox" value="Sab" class="shift-day-cb hidden peer"><span class="block py-1.5 rounded-lg border text-[10px] font-bold peer-checked:bg-brand-600 peer-checked:text-white">Sab</span></label>
-                        <label class="cursor-pointer"><input type="checkbox" value="Min" class="shift-day-cb hidden peer"><span class="block py-1.5 rounded-lg border text-[10px] font-bold peer-checked:bg-brand-600 peer-checked:text-white">Min</span></label>
-                    </div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Shift</label>
+                    <input type="text" id="shiftModalName" required placeholder="misal: Reguler Utama" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
                 </div>
-                <div><label class="block font-semibold mb-1">Skema Waktu</label><select id="shiftModalScheme" onchange="onShiftSchemeChange(this.value)" required class="w-full px-3 py-2 border rounded-xl"></select></div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Skema Waktu Acuan</label>
+                    <select id="shiftModalScheme" onchange="onShiftSchemeChange(this.value)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"></select>
+                </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block font-semibold mb-1">Jam Masuk</label><input type="time" id="shiftModalStart" required class="w-full px-3 py-2 border rounded-xl"></div>
-                    <div><label class="block font-semibold mb-1">Jam Pulang</label><input type="time" id="shiftModalEnd" required class="w-full px-3 py-2 border rounded-xl"></div>
-                </div>
-                <div><label class="block font-semibold mb-1">Deskripsi</label><input type="text" id="shiftModalDesc" class="w-full px-3 py-2 border rounded-xl"></div>
-                <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeShiftModal()" class="w-1/2 py-2.5 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Batal</button>
-                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL CONFIRM DELETE -->
-    <div id="confirmDeleteModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl p-5 max-w-xs w-full shadow-2xl text-center">
-            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl mx-auto mb-3"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <h3 class="font-extrabold text-base text-slate-900">Konfirmasi Hapus</h3>
-            <p id="confirmDeleteText" class="text-xs text-slate-500 mt-1">Hapus data ini?</p>
-            <div class="mt-4 flex gap-2">
-                <button onclick="closeDeleteModal()" class="w-1/2 py-2 bg-slate-100 font-bold text-xs rounded-xl hover:bg-slate-200">Batal</button>
-                <button id="execDeleteBtn" class="w-1/2 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl">Hapus</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL LOGIN -->
-    <div id="loginModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                <h3 class="font-extrabold text-base text-slate-900"><i class="fa-solid fa-lock text-brand-600"></i> Login Admin</h3>
-                <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="handleLoginSubmit(event)" class="mt-4 space-y-3 text-xs">
-                <div><label class="block font-semibold mb-1">Username</label><input type="text" id="loginUsername" required class="w-full px-3 py-2 border rounded-xl"></div>
-                <div>
-                    <label class="block font-semibold mb-1">Password</label>
-                    <div class="relative">
-                        <input type="password" id="loginPassword" required class="w-full px-3 py-2 pr-10 border rounded-xl">
-                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"><i id="loginPasswordEye" class="fa-solid fa-eye text-xs"></i></button>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Jam Masuk</label>
+                        <input type="time" id="shiftModalStart" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Jam Pulang</label>
+                        <input type="time" id="shiftModalEnd" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
                     </div>
                 </div>
-                <div id="loginErrorMsg" class="hidden p-2 bg-rose-50 text-rose-600 font-semibold text-[11px] rounded-lg">Username atau password salah.</div>
-                <div class="pt-2"><button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-all">Masuk</button></div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Hari Kerja Aktif</label>
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <label class="inline-flex items-center gap-1 text-xs font-bold"><input type="checkbox" value="Sen" class="shift-day-cb rounded text-brand-600"> Sen</label>
+                        <label class="inline-flex items-center gap-1 text-xs font-bold"><input type="checkbox" value="Sel" class="shift-day-cb rounded text-brand-600"> Sel</label>
+                        <label class="inline-flex items-center gap-1 text-xs font-bold"><input type="checkbox" value="Rab" class="shift-day-cb rounded text-brand-600"> Rab</label>
+                        <label class="inline-flex items-center gap-1 text-xs font-bold"><input type="checkbox" value="Kam" class="shift-day-cb rounded text-brand-600"> Kam</label>
+                        <label class="inline-flex items-center gap-1 text-xs font-bold"><input type="checkbox" value="Jum" class="shift-day-cb rounded text-brand-600"> Jum</label>
+                        <label class="inline-flex items-center gap-1 text-xs font-bold"><input type="checkbox" value="Sab" class="shift-day-cb rounded text-brand-600"> Sab</label>
+                        <label class="inline-flex items-center gap-1 text-xs font-bold"><input type="checkbox" value="Min" class="shift-day-cb rounded text-brand-600"> Min</label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Keterangan</label>
+                    <input type="text" id="shiftModalDesc" placeholder="Opsional..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                    <button type="button" onclick="closeShiftModal()" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Batal</button>
+                    <button type="submit" class="flex-1 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md">Simpan Shift</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- TOAST CONTAINER -->
-    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <!-- MODAL: SKEMA WAKTU (TIME SCHEME) -->
+    <div id="timeSchemeModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="glass-card bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200 overflow-y-auto max-h-[90vh]">
+            <h3 id="timeSchemeModalTitle" class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                <i class="fa-solid fa-clock text-brand-600"></i> Form Skema Waktu
+            </h3>
+            <form onsubmit="handleTimeSchemeSubmit(event)" class="space-y-3">
+                <input type="hidden" id="schemeModalId">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Skema Waktu</label>
+                    <input type="text" id="schemeModalName" required placeholder="misal: Reguler Utama" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Jam Masuk Standar</label>
+                        <input type="time" id="schemeModalStart" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Jam Pulang Standar</label>
+                        <input type="time" id="schemeModalEnd" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Toleransi Terlambat (Menit)</label>
+                        <input type="number" id="schemeModalTolMin" required min="0" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Toleransi Pulang Cepat (Menit)</label>
+                        <input type="number" id="schemeModalTolEarly" required min="0" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                    </div>
+                </div>
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                    <span class="text-[11px] font-extrabold text-slate-700">Batas Jendela Scan Masuk</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="time" id="schemeModalScanInStart" required class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold">
+                        <input type="time" id="schemeModalScanInEnd" required class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold">
+                    </div>
+                </div>
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                    <span class="text-[11px] font-extrabold text-slate-700">Batas Jendela Scan Pulang</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="time" id="schemeModalScanOutStart" required class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold">
+                        <input type="time" id="schemeModalScanOutEnd" required class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Keterangan / Deskripsi</label>
+                    <input type="text" id="schemeModalDesc" placeholder="Opsional..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium">
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                    <button type="button" onclick="closeTimeSchemeModal()" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Batal</button>
+                    <button type="submit" class="flex-1 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md">Simpan Skema</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <!-- SCRIPT IMPORTS -->
+    <!-- MODAL: CONFIRM DELETE -->
+    <div id="confirmDeleteModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="glass-card bg-white rounded-3xl max-w-xs w-full p-5 shadow-2xl text-center space-y-4 border border-slate-200">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 mx-auto flex items-center justify-center text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h4 class="font-extrabold text-slate-900 text-sm">Konfirmasi Hapus</h4>
+                <p id="confirmDeleteText" class="text-xs text-slate-500 mt-1">Apakah Anda yakin ingin menghapus data ini?</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="closeDeleteModal()" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Batal</button>
+                <button id="execDeleteBtn" class="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OVERLAY: LIVE POPUP SCAN CARD -->
+    <div id="livePopupOverlay" class="fixed inset-0 z-[80] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
+        <div id="livePopupCard" class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-5 text-center transform scale-90 opacity-0 transition-all duration-300 relative overflow-hidden border border-slate-100">
+            
+            <div class="relative inline-block">
+                <img id="popupAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl mx-auto">
+            </div>
+
+            <div>
+                <h3 id="popupName" class="text-lg font-extrabold text-slate-900 tracking-tight">Nama Personel</h3>
+                <p id="popupNip" class="text-xs font-mono text-slate-500 mt-0.5">NIP. -</p>
+            </div>
+
+            <div class="py-2.5 px-4 bg-slate-50 rounded-2xl border border-slate-100 inline-block">
+                <div id="popupTime" class="font-mono font-extrabold text-2xl text-slate-900">00:00 WITA</div>
+            </div>
+
+            <div class="flex justify-center">
+                <span id="popupStatusText" class="px-4 py-1.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800">HADIR</span>
+            </div>
+
+            <button onclick="dismissPopup()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 p-2">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+
+            <!-- Auto Progress Bar -->
+            <div class="absolute bottom-0 left-0 right-0 h-1.5 bg-slate-100">
+                <div id="popupProgressBar" class="h-full bg-brand-600 w-full"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Logic Scripts -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/modals.js"></script>
     <script src="js/export.js"></script>
     <script src="js/app.js"></script>
-
-    <script>
-        // Pastikan tombol navigasi mengikuti tab yang benar setelah switchTab dari ui.js.
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof window.switchTab === 'function') {
-                const originalSwitchTab = window.switchTab;
-                window.switchTab = function(tabId) {
-                    originalSwitchTab(tabId);
-                    document.querySelectorAll('.nav-tab-btn').forEach(function(btn) {
-                        btn.classList.remove('active');
-                    });
-                    const activeBtn = document.getElementById('tabBtn-' + tabId);
-                    if (activeBtn) activeBtn.classList.add('active');
-                };
-                const liveBtn = document.getElementById('tabBtn-live');
-                if (liveBtn && !document.querySelector('.nav-tab-btn.active')) liveBtn.classList.add('active');
-            }
-        });
-    </script>
 
 </body>
 </html>
