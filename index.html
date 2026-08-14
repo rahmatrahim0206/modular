@@ -200,40 +200,88 @@
                 min-height: 0 !important;
             }
         }
+
+        /* ===== REFERENCE DASHBOARD LAYOUT ===== */
+        .app-shell { min-height: calc(100vh - 4.25rem); }
+        .app-sidebar { width: 218px; position: fixed; left: 0; top: 4.25rem; bottom: 0; }
+        .sidebar-inner { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+        .app-main { margin-left: 218px; min-height: calc(100vh - 4.25rem); }
+        .sidebar-btn { min-height: 42px; }
+        .sidebar-btn.active { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; }
+        .live-upper-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr) minmax(280px, 1fr); gap: 1rem; min-height: 0; }
+        .feed-card, .info-card { min-height: 0; }
+        .feed-list > div { min-height: 0 !important; }
+        .stats-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; }
+        .kpi-icon { width: 44px; height: 44px; border-radius: 14px; display:flex; align-items:center; justify-content:center; flex:0 0 auto; font-size: 1.05rem; }
+        .kpi-label { font-size: .7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .04em; }
+        .kpi-value { margin-top: .1rem; font-size: 1.8rem; line-height: 1; font-weight: 800; color: #0f172a; }
+        .kpi-sub { margin-top: .25rem; font-size: .65rem; color: #64748b; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #categoryDonutChart { width:100% !important; height:100% !important; }
+        #absentList { min-height: 0; }
+        #absentList > div { min-height: 0; }
+        @media (min-width: 1280px) {
+            body:has(#view-live:not(.hidden)) { overflow: hidden !important; }
+            body:has(#view-live:not(.hidden)) .app-main { overflow: hidden; }
+            #view-live:not(.hidden) { height: calc(100vh - 4.25rem); overflow: hidden; }
+            .live-upper-grid { flex: 1 1 auto; min-height: 0; }
+            .feed-card, .info-card { min-height: 0; }
+            .feed-list { min-height: 0; }
+            .donut-wrap { max-height: 250px; }
+        }
+        @media (min-width: 1600px) {
+            .app-main { padding-left: 1.75rem; padding-right: 1.75rem; }
+            .live-upper-grid, .stats-grid { gap: 1.25rem; }
+        }
+        @media (max-width: 1279px) {
+            .app-sidebar { position: sticky; top: 0; width: 100%; height: auto; border-right: 0; border-bottom: 1px solid #e2e8f0; }
+            .sidebar-inner { flex-direction: row; overflow-x: auto; align-items: center; padding: .5rem .75rem; }
+            .sidebar-inner > div:first-child, .sidebar-school { display:none; }
+            .sidebar-inner > div:nth-child(2) { display:flex; flex-direction:row; width:100%; overflow-x:auto; }
+            .app-main { margin-left: 0; }
+            .live-upper-grid { grid-template-columns: 1fr 1fr; }
+            .feed-card { grid-column: 1 / -1; min-height: 420px; }
+            .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 767px) {
+            .live-upper-grid { grid-template-columns: 1fr; }
+            .feed-card { grid-column: auto; min-height: 420px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .kpi-value { font-size: 1.6rem; }
+            .app-main { padding: .75rem; }
+        }
     </style>
 </head>
 <body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
 
     <!-- HEADER -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 shadow-xs">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between min-h-[3.5rem] py-2 gap-2">
-                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 shrink-0">
-                        <i class="fa-solid fa-fingerprint text-base sm:text-xl"></i>
+    <header class="app-header bg-white/95 backdrop-blur-md border-b border-slate-200/90 sticky top-0 z-40 shadow-sm">
+        <div class="w-full px-5 lg:px-7">
+            <div class="flex items-center justify-between min-h-[4.25rem] gap-4">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 shrink-0">
+                        <i class="fa-solid fa-fingerprint text-xl"></i>
                     </div>
                     <div class="min-w-0">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <h1 class="font-extrabold text-slate-900 text-sm sm:text-lg leading-tight tracking-tight truncate">PresensiLive <span class="text-brand-600">Pro</span></h1>
-                            <span id="bridgeStatusBadge" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-extrabold text-slate-900 text-base sm:text-xl leading-tight tracking-tight truncate">PresensiLive <span class="text-brand-600">Pro</span></h1>
+                            <span id="bridgeStatusBadge" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> ONLINE
                             </span>
                         </div>
-                        <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 hidden sm:block truncate">Integration Bridge • Absensi Realtime</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 hidden sm:block truncate">Integration Bridge • Absensi Realtime</p>
                     </div>
                 </div>
-
-                <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
-                    <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-100/90 px-2.5 sm:px-3.5 py-1.5 rounded-xl border border-slate-200/80">
-                        <i class="fa-regular fa-clock text-brand-600 text-xs sm:text-sm shrink-0"></i>
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <div class="flex items-center gap-2 bg-slate-50 px-3 sm:px-4 py-2 rounded-2xl border border-slate-200/80">
+                        <i class="fa-regular fa-clock text-brand-600 text-sm"></i>
                         <div class="text-right leading-tight">
-                            <div id="liveClock" class="font-mono font-bold text-slate-800 text-[11px] sm:text-sm whitespace-nowrap">00:00:00 WITA</div>
-                            <div id="liveDate" class="text-[10px] text-slate-500 font-medium hidden md:block whitespace-nowrap">Memuat...</div>
+                            <div id="liveClock" class="font-mono font-extrabold text-slate-800 text-xs sm:text-sm whitespace-nowrap">00:00:00 WITA</div>
+                            <div id="liveDate" class="text-[10px] text-slate-500 font-medium hidden sm:block whitespace-nowrap">Memuat...</div>
                         </div>
                     </div>
                     <div id="authHeaderContainer" class="shrink-0">
-                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-all active:scale-95 shadow-xs">
-                            <i class="fa-solid fa-lock text-xs sm:text-sm"></i>
+                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-10 h-10 flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white rounded-2xl transition-all active:scale-95 shadow-sm">
+                            <i class="fa-solid fa-lock text-sm"></i>
                         </button>
                     </div>
                 </div>
@@ -241,169 +289,136 @@
         </div>
     </header>
 
-    <!-- NAVIGATION -->
-    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs sticky top-[3.5rem] sm:top-[3.75rem] z-20">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between py-2 gap-2 overflow-x-auto no-scrollbar touch-scroll">
-                <div class="flex items-center gap-1.5 shrink-0">
-                    <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-brand-600 text-white shadow-xs whitespace-nowrap">
-                        <i class="fa-solid fa-desktop text-xs"></i> <span>Dasbor Live</span>
+    <!-- APP SHELL -->
+    <div class="app-shell">
+        <!-- SIDEBAR / NAVIGATION -->
+        <nav class="app-sidebar bg-white border-r border-slate-200/90 z-30">
+            <div class="sidebar-inner px-3 py-4">
+                <div class="px-3 mb-4">
+                    <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-400">Monitoring</p>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn sidebar-btn active flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all bg-brand-600 text-white shadow-sm whitespace-nowrap">
+                        <i class="fa-solid fa-desktop w-5 text-center"></i><span>Dashboard Live</span>
                     </button>
-                    <button onclick="switchTab('log')" id="tabBtn-log" class="nav-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-list-check text-xs"></i> <span>Log Realtime</span>
+                    <button onclick="switchTab('log')" id="tabBtn-log" class="nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
+                        <i class="fa-solid fa-list-check w-5 text-center"></i><span>Log Realtime</span>
                     </button>
-                    <button onclick="switchTab('employees')" id="tabBtn-employees" class="admin-only hidden nav-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-users text-xs"></i> <span>Data Personel</span>
+                    <button onclick="switchTab('employees')" id="tabBtn-employees" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
+                        <i class="fa-solid fa-users w-5 text-center"></i><span>Personel</span>
                     </button>
-                    <button onclick="switchTab('shifts')" id="tabBtn-shifts" class="admin-only hidden nav-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-calendar-days text-xs"></i> <span>Shift Kerja</span>
+                    <button onclick="switchTab('shifts')" id="tabBtn-shifts" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
+                        <i class="fa-solid fa-calendar-days w-5 text-center"></i><span>Shift Kerja</span>
                     </button>
-                    <button onclick="switchTab('settings')" id="tabBtn-settings" class="admin-only hidden nav-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
-                        <i class="fa-solid fa-sliders text-xs"></i> <span>Skema Waktu</span>
+                    <button onclick="switchTab('settings')" id="tabBtn-settings" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap">
+                        <i class="fa-solid fa-sliders w-5 text-center"></i><span>Pengaturan</span>
                     </button>
-                    <button onclick="exportToExcel()" class="admin-only hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 whitespace-nowrap">
-                        <i class="fa-solid fa-file-excel text-emerald-600 text-xs"></i> <span>Unduh Excel</span>
+                    <button onclick="exportToExcel()" class="admin-only hidden sidebar-btn flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-50 whitespace-nowrap">
+                        <i class="fa-solid fa-file-excel w-5 text-center text-emerald-600"></i><span>Unduh Excel</span>
                     </button>
                 </div>
-                <div id="adminBadgeContainer" class="hidden shrink-0 flex items-center gap-2">
-                    <div id="adminBridgePingBox" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold">
-                        <i class="fa-solid fa-network-wired"></i> <span id="adminBridgeTime">-</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs font-semibold">
-                        <i class="fa-solid fa-user-shield text-amber-600 text-xs"></i> <span class="hidden sm:inline">Admin Mode</span>
-                        <button onclick="handleLogout()" class="ml-0.5 p-1 hover:bg-amber-200/60 rounded-md text-amber-700"><i class="fa-solid fa-xmark text-xs"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        
-        <!-- TAB LIVE -->
-        <section id="view-live" class="tab-view space-y-4 sm:space-y-6 dashboard-live">
-            <!-- STATS CARDS GRID -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-xs">
-                    <div class="min-w-0 pr-1.5">
-                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Total Personel</p>
-                        <h3 id="statTotalEmp" class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-slate-900 mt-0.5">0</h3>
-                        <p class="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5 truncate hidden sm:block">Guru, Pegawai, Keamanan & Kebersihan</p>
-                    </div>
-                    <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-sm sm:text-lg shrink-0"><i class="fa-solid fa-user-group"></i></div>
-                </div>
-                <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-xs">
-                    <div class="min-w-0 pr-1.5">
-                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Hadir Hari Ini</p>
-                        <h3 id="statPresentToday" class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-emerald-600 mt-0.5">0</h3>
-                        <p id="statPresentSub" class="text-[10px] sm:text-[11px] text-emerald-600 font-medium mt-0.5 truncate">0% total</p>
-                    </div>
-                    <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm sm:text-lg shrink-0"><i class="fa-solid fa-user-check"></i></div>
-                </div>
-                <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-xs">
-                    <div class="min-w-0 pr-1.5">
-                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Terlambat</p>
-                        <h3 id="statLateToday" class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-amber-500 mt-0.5">0</h3>
-                        <p class="text-[10px] sm:text-[11px] text-amber-600 font-medium mt-0.5 truncate">Melewati toleransi</p>
-                    </div>
-                    <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-sm sm:text-lg shrink-0"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                </div>
-                <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-xs">
-                    <div class="min-w-0 pr-1.5">
-                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Belum Masuk</p>
-                        <h3 id="statAbsentToday" class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-rose-500 mt-0.5">0</h3>
-                        <p class="text-[10px] sm:text-[11px] text-rose-500 font-medium mt-0.5 truncate">Belum tap hari ini</p>
-                    </div>
-                    <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-sm sm:text-lg shrink-0"><i class="fa-solid fa-user-xmark"></i></div>
-                </div>
-            </div>
-
-            <!-- FEED REALTIME & CHART SECTION -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch">
-                <!-- FEED REALTIME CONTAINER -->
-                <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col justify-between h-full">
-                    <div>
-                        <div class="flex items-center justify-between pb-3 sm:pb-4 border-b border-slate-100">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 pulse-live"></div>
-                                <h2 class="font-extrabold text-slate-900 text-sm sm:text-base">Feed Absensi Realtime</h2>
-                            </div>
+                <div class="sidebar-school mt-auto pt-6 px-3">
+                    <div class="h-px bg-slate-100 mb-4"></div>
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-700 flex items-center justify-center shrink-0"><i class="fa-solid fa-school"></i></div>
+                        <div class="min-w-0">
+                            <p class="font-extrabold text-slate-900 text-[11px] truncate">SMPN 3 MAKASSAR</p>
+                            <p class="text-[10px] text-slate-500 truncate">Monitoring Absensi</p>
                         </div>
-                        <div id="liveFeedList" class="overflow-hidden max-h-none py-2 space-y-2 pr-1"></div>
                     </div>
-                    <div class="mt-1 pt-2 border-t border-slate-100 text-center shrink-0">
-                        <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors flex items-center justify-center gap-1.5 w-full py-1 rounded-xl hover:bg-brand-50">
-                            Lihat Selengkapnya di Log Realtime <i class="fa-solid fa-arrow-right text-xs"></i>
+                    <div id="adminBadgeContainer" class="hidden mt-3">
+                        <div class="flex items-center justify-between gap-2 px-2.5 py-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[10px] font-semibold">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-amber-600"></i><span>Admin Mode</span></span>
+                            <button onclick="handleLogout()" class="p-1 hover:bg-amber-200/60 rounded-md text-amber-700"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div id="adminBridgePingBox" class="hidden mt-2 sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold">
+                            <i class="fa-solid fa-network-wired"></i><span id="adminBridgeTime">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="app-main flex-1 w-full px-4 sm:px-6 xl:px-7 py-4 sm:py-5">
+        <!-- TAB LIVE -->
+        <section id="view-live" class="tab-view dashboard-live space-y-4 sm:space-y-5">
+            <!-- UPPER MONITORING AREA -->
+            <div class="live-upper-grid">
+                <!-- FEED REALTIME -->
+                <div class="feed-card glass-card rounded-2xl shadow-sm flex flex-col min-h-0">
+                    <div class="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-slate-100 shrink-0">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-live"></span>
+                            <h2 class="font-extrabold text-slate-900 text-sm sm:text-base">Feed Absensi Realtime</h2>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Live</span>
+                    </div>
+                    <div id="liveFeedList" class="feed-list flex-1 min-h-0 overflow-hidden px-4 sm:px-5 py-2 space-y-1.5"></div>
+                    <div class="px-4 sm:px-5 pb-3 pt-2 border-t border-slate-100 shrink-0">
+                        <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors flex items-center justify-center gap-1.5 w-full py-2 rounded-xl hover:bg-brand-50">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Lihat Selengkapnya di Log Realtime <i class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
-                
-                <!-- SIDEBAR CHART & RULES -->
-                <div class="space-y-4 sm:space-y-6 flex flex-col justify-between">
-                    <div class="grid grid-cols-2 gap-3 sm:gap-4 flex-1 min-h-0 items-stretch">
-                        <!-- KOMPOSISI KEHADIRAN -->
-                        <div class="glass-card rounded-2xl p-3 sm:p-4 shadow-xs flex flex-col min-h-0 h-full overflow-hidden">
-                            <div class="flex items-center justify-between gap-2 mb-2.5 pb-2.5 border-b border-slate-100 shrink-0">
-                                <div class="flex items-center gap-2 min-w-0">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-brand-500 shrink-0"></span>
-                                    <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">Komposisi Kehadiran</h3>
-                                </div>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 shrink-0">PERSONEL</span>
-                            </div>
-                            <div class="flex-1 min-h-0 flex flex-col justify-center">
-                                <div class="relative w-full h-32 sm:h-36 flex items-center justify-center mx-auto max-w-[190px] shrink-0">
-                                    <canvas id="categoryDonutChart"></canvas>
-                                </div>
-                                <div class="mt-2.5 grid grid-cols-2 gap-1.5 text-[9px] sm:text-[10px] font-bold">
-                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
-                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#0ea5e9] shrink-0"></span><span class="text-slate-600 truncate">Guru</span></div>
-                                        <span id="chartLegendGURU" class="text-slate-900 shrink-0">0</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
-                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#6366f1] shrink-0"></span><span class="text-slate-600 truncate">Pegawai</span></div>
-                                        <span id="chartLegendPEGAWAI" class="text-slate-900 shrink-0">0</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
-                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#f59e0b] shrink-0"></span><span class="text-slate-600 truncate">Keamanan</span></div>
-                                        <span id="chartLegendKEAMANAN" class="text-slate-900 shrink-0">0</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
-                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#10b981] shrink-0"></span><span class="text-slate-600 truncate">Kebersihan</span></div>
-                                        <span id="chartLegendKEBERSIHAN" class="text-slate-900 shrink-0">0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- TIDAK ABSEN -->
-                        <div class="glass-card rounded-2xl p-3 sm:p-4 shadow-xs flex flex-col min-h-0 h-full overflow-hidden">
-                            <div class="flex items-center justify-between gap-2 mb-2.5 pb-2.5 border-b border-slate-100 shrink-0">
-                                <div class="flex items-center gap-2 min-w-0">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
-                                    <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">Tidak Absen</h3>
-                                </div>
-                                <span id="absentListCount" class="min-w-6 h-5 px-1.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 text-[9px] font-extrabold flex items-center justify-center shrink-0">0</span>
-                            </div>
-                            <div id="absentList" class="flex-1 min-h-0 space-y-1.5 overflow-hidden">
-                                <div class="h-full flex items-center justify-center text-center text-slate-400 text-[10px]">Memuat data...</div>
-                            </div>
+                <!-- HADIR HARI INI -->
+                <div class="info-card glass-card rounded-2xl p-3.5 sm:p-4 shadow-sm flex flex-col min-h-0 overflow-hidden">
+                    <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 shrink-0">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 shrink-0"></span>
+                            <h3 class="font-extrabold text-slate-900 text-sm truncate">Hadir Hari Ini</h3>
+                        </div>
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase shrink-0">Personel</span>
+                    </div>
+                    <div class="flex-1 min-h-0 flex flex-col justify-center">
+                        <div class="donut-wrap relative w-full h-40 sm:h-48 xl:h-52 flex items-center justify-center mx-auto max-w-[250px]">
+                            <canvas id="categoryDonutChart"></canvas>
+                        </div>
+                        <div class="mt-2.5 grid grid-cols-2 gap-1.5 text-[9px] sm:text-[10px] font-bold">
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#0ea5e9]"></span><span class="text-slate-600 truncate">Guru</span></span><span id="chartLegendGURU" class="text-slate-900">0</span></div>
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#6366f1]"></span><span class="text-slate-600 truncate">Pegawai</span></span><span id="chartLegendPEGAWAI" class="text-slate-900">0</span></div>
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span><span class="text-slate-600 truncate">Keamanan</span></span><span id="chartLegendKEAMANAN" class="text-slate-900">0</span></div>
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span><span class="text-slate-600 truncate">Kebersihan</span></span><span id="chartLegendKEBERSIHAN" class="text-slate-900">0</span></div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs bg-gradient-to-br from-white to-slate-50">
-                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm mb-3">Info Aturan Jam Kerja</h3>
-                        <div class="space-y-2 text-xs">
-                            <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-100/70 rounded-xl border border-slate-200/60">
-                                <span class="text-slate-600 font-medium">Jam Masuk</span>
-                                <span id="displayStdIn" class="font-mono font-extrabold text-slate-900 text-xs sm:text-sm">-</span>
-                            </div>
-                            <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-100/70 rounded-xl border border-slate-200/60">
-                                <span class="text-slate-600 font-medium">Jam Pulang</span>
-                                <span id="displayStdOut" class="font-mono font-extrabold text-slate-900 text-xs sm:text-sm">-</span>
-                            </div>
+                <!-- BELUM MASUK -->
+                <div class="info-card glass-card rounded-2xl p-3.5 sm:p-4 shadow-sm flex flex-col min-h-0 overflow-hidden">
+                    <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 shrink-0">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                            <h3 class="font-extrabold text-slate-900 text-sm truncate">Belum Masuk</h3>
                         </div>
+                        <span id="absentListCount" class="min-w-7 h-5 px-1.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 text-[9px] font-extrabold flex items-center justify-center shrink-0">0</span>
                     </div>
+                    <div id="absentList" class="flex-1 min-h-0 overflow-hidden pt-1"></div>
+                </div>
+            </div>
+
+            <!-- KPI AREA -->
+            <div class="stats-grid">
+                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+                    <div class="kpi-icon bg-brand-50 text-brand-600"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="min-w-0"><p class="kpi-label">Total Personel</p><h3 id="statTotalEmp" class="kpi-value">0</h3><p class="kpi-sub">Semua personel aktif</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+                    <div class="kpi-icon bg-emerald-50 text-emerald-600"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="min-w-0"><p class="kpi-label">Hadir Hari Ini</p><h3 id="statPresentToday" class="kpi-value text-emerald-600">0</h3><p id="statPresentSub" class="kpi-sub text-emerald-600">0% dari total personel</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+                    <div class="kpi-icon bg-amber-50 text-amber-500"><i class="fa-solid fa-clock"></i></div>
+                    <div class="min-w-0"><p class="kpi-label">Terlambat</p><h3 id="statLateToday" class="kpi-value text-amber-500">0</h3><p class="kpi-sub text-amber-600">Melewati toleransi</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+                    <div class="kpi-icon bg-rose-50 text-rose-500"><i class="fa-solid fa-user-xmark"></i></div>
+                    <div class="min-w-0"><p class="kpi-label">Belum Masuk</p><h3 id="statAbsentToday" class="kpi-value text-rose-500">0</h3><p class="kpi-sub text-rose-500">Belum tap hari ini</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+                    <div class="kpi-icon bg-indigo-50 text-indigo-600"><i class="fa-solid fa-clock"></i></div>
+                    <div class="min-w-0"><p class="kpi-label">Jam Standar</p><h3 class="kpi-value text-slate-900 text-xl sm:text-2xl"><span id="displayStdIn">-</span> - <span id="displayStdOut">-</span></h3><p class="kpi-sub">Jam kerja hari ini</p></div>
                 </div>
             </div>
         </section>
