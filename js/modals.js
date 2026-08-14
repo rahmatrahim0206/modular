@@ -191,8 +191,17 @@ async function handleSaveTimeRules(e) {
     showToast("Menyimpan opsi..."); await sendApiPost({ action: "saveTimeRules", timeRules: timeRules }); showToast("Opsi tersimpan!");
 }
 
-function openLoginModal() { document.getElementById('loginErrorMsg').classList.add('hidden'); document.getElementById('loginModal').classList.remove('hidden'); }
-function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+function openLoginModal() { 
+    document.getElementById('loginErrorMsg').classList.add('hidden'); 
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginModal').classList.remove('hidden'); 
+}
+
+function closeLoginModal() { 
+    document.getElementById('loginModal').classList.add('hidden'); 
+}
+
 function togglePasswordVisibility() {
     const pwdInput = document.getElementById('loginPassword');
     const eyeIcon = document.getElementById('loginPasswordEye');
@@ -228,7 +237,7 @@ async function handleLoginSubmit(e) {
             document.getElementById('loginErrorMsg').classList.remove('hidden');
         }
     } catch (error) {
-        showToast("Koneksi gagal. Coba lagi.", "error");
+        showToast("Koneksi ke server gagal. Coba lagi.", "error");
     } finally {
         btn.innerText = "Masuk";
         btn.disabled = false;
@@ -236,3 +245,32 @@ async function handleLoginSubmit(e) {
 }
 
 function handleLogout() {
+    isAdminLoggedIn = false;
+    updateAdminUIState();
+    switchTab('live');
+    showToast("Berhasil keluar dari mode Admin");
+}
+
+function updateAdminUIState() {
+    const adminNavs = document.querySelectorAll('.admin-only');
+    const authHeader = document.getElementById('authHeaderContainer');
+    const adminBadge = document.getElementById('adminBadgeContainer');
+
+    if (isAdminLoggedIn) {
+        adminNavs.forEach(el => el.classList.remove('hidden'));
+        if (authHeader) authHeader.classList.add('hidden');
+        if (adminBadge) adminBadge.classList.remove('hidden');
+    } else {
+        adminNavs.forEach(el => el.classList.add('hidden'));
+        if (authHeader) authHeader.classList.remove('hidden');
+        if (adminBadge) adminBadge.classList.add('hidden');
+    }
+}
+
+function openMachineMatchingModal() {
+    showToast("Pencocokan PIN dilakukan secara otomatis lewat Bridge.", "success");
+}
+
+function openImportMachineModal() {
+    showToast("Tarik data sedang sinkronisasi otomatis dari Bridge.", "success");
+}
