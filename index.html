@@ -52,13 +52,93 @@
         .touch-scroll {
             -webkit-overflow-scrolling: touch;
         }
+
+        /* FULL SCREEN DASHBOARD 1920x1080 */
+        @media (min-width: 1280px) {
+            html, body {
+                min-height: 100vh;
+            }
+
+            body {
+                min-height: 100vh;
+            }
+
+            #view-live {
+                height: calc(100vh - 9.5rem);
+                min-height: 700px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #view-live > .grid:first-child {
+                flex: 0 0 auto;
+            }
+
+            #view-live > .grid:nth-child(2) {
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+
+            #view-live > .grid:nth-child(2) > div {
+                min-height: 0;
+            }
+
+            #liveFeedList {
+                max-height: none !important;
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+
+            #view-live > .grid:nth-child(2) > div:first-child {
+                min-height: 0;
+            }
+
+            #view-live > .grid:nth-child(2) > div:first-child > div:first-child {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                flex: 1 1 auto;
+            }
+
+            #view-live > .grid:nth-child(2) > div:first-child > div:first-child > div:nth-child(2) {
+                min-height: 0;
+                flex: 1 1 auto;
+            }
+
+            #view-live > .grid:nth-child(2) > div:last-child {
+                min-height: 0;
+            }
+
+            #categoryDonutChart {
+                max-height: 100%;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            #view-live > .grid:first-child {
+                gap: 1.25rem;
+            }
+
+            #view-live > .grid:nth-child(2) {
+                gap: 1.5rem;
+            }
+
+            #view-live > .grid:nth-child(2) > div:first-child {
+                padding: 1.5rem;
+            }
+
+            #liveFeedList {
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
 
     <!-- HEADER -->
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 shadow-xs">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between min-h-[3.5rem] py-2 gap-2">
                 <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                     <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 shrink-0">
@@ -95,7 +175,7 @@
 
     <!-- NAVIGATION -->
     <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs sticky top-[3.5rem] sm:top-[3.75rem] z-20">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between py-2 gap-2 overflow-x-auto no-scrollbar touch-scroll">
                 <div class="flex items-center gap-1.5 shrink-0">
                     <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-brand-600 text-white shadow-xs whitespace-nowrap">
@@ -131,10 +211,10 @@
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <main class="flex-1 w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         
         <!-- TAB LIVE -->
-        <section id="view-live" class="tab-view space-y-4 sm:space-y-6">
+        <section id="view-live" class="tab-view space-y-4 sm:space-y-6 dashboard-live">
             <!-- STATS CARDS GRID -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-xs">
