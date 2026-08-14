@@ -260,15 +260,13 @@ function updateAdminUIState() {
         adminNavs.forEach(el => el.classList.remove('hidden'));
         if (authHeader) authHeader.classList.add('hidden');
         if (adminBadge) adminBadge.classList.remove('hidden');
+        if (adminBadge) adminBadge.classList.add('flex'); // Pastikan menggunakan flex saat tampil
     } else {
         adminNavs.forEach(el => el.classList.add('hidden'));
         if (authHeader) authHeader.classList.remove('hidden');
         if (adminBadge) adminBadge.classList.add('hidden');
+        if (adminBadge) adminBadge.classList.remove('flex');
     }
-}
-
-function openMachineMatchingModal() {
-    showToast("Pencocokan PIN dilakukan secara otomatis lewat Bridge.", "success");
 }
 
 function openImportMachineModal() {
