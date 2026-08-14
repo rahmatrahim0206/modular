@@ -179,6 +179,25 @@
                     <div class="glass-card rounded-2xl p-5 shadow-xs">
                         <h3 class="font-bold text-slate-900 text-sm mb-3">Komposisi Kehadiran</h3>
                         <div class="relative h-48 flex items-center justify-center"><canvas id="categoryDonutChart"></canvas></div>
+                        <!-- TAMBAHAN LEGENDA INDIKATOR DI BAWAH INI -->
+                        <div class="mt-4 grid grid-cols-2 gap-2 text-[10px] font-bold">
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9]"></span> <span class="text-slate-600">Guru</span></div>
+                                <span id="chartLegendGURU" class="text-slate-900">0</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#6366f1]"></span> <span class="text-slate-600">Pegawai</span></div>
+                                <span id="chartLegendPEGAWAI" class="text-slate-900">0</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span> <span class="text-slate-600">Keamanan</span></div>
+                                <span id="chartLegendKEAMANAN" class="text-slate-900">0</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></span> <span class="text-slate-600">Kebersihan</span></div>
+                                <span id="chartLegendKEBERSIHAN" class="text-slate-900">0</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="glass-card rounded-2xl p-5 shadow-xs bg-gradient-to-br from-white to-slate-50">
                         <h3 class="font-bold text-slate-900 text-sm mb-3">Info Aturan Jam Kerja</h3>
