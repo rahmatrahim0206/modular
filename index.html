@@ -165,28 +165,29 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 glass-card rounded-2xl p-5 shadow-xs flex flex-col h-[520px]">
+            <!-- MENGUBAH LAYOUT AGAR FEED SEJAJAR DAN OPTIMAL DI LAYAR 24 INCH -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div class="lg:col-span-2 glass-card rounded-2xl p-5 shadow-xs flex flex-col h-full min-h-[500px] lg:min-h-[600px] xl:min-h-[700px]">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                         <div class="flex items-center gap-2.5">
                             <div class="w-3 h-3 rounded-full bg-emerald-500 pulse-live"></div>
                             <h2 class="font-extrabold text-slate-900 text-base">Feed Absensi Realtime</h2>
                         </div>
                     </div>
+                    <!-- 'flex-1' memastikan list memanjang memenuhi sisa ruang -->
                     <div id="liveFeedList" class="flex-1 overflow-y-auto py-3 space-y-3 pr-1"></div>
-                    <!-- TAMBAHAN TOMBOL LIHAT SELENGKAPNYA -->
                     <div class="mt-2 pt-4 border-t border-slate-100 text-center shrink-0">
                         <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors flex items-center justify-center gap-1.5 w-full py-2 rounded-xl hover:bg-brand-50">
                             Lihat Selengkapnya di Log Realtime <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
-                <div class="space-y-6">
-                    <div class="glass-card rounded-2xl p-5 shadow-xs">
-                        <h3 class="font-bold text-slate-900 text-sm mb-3">Komposisi Kehadiran</h3>
-                        <div class="relative h-48 flex items-center justify-center"><canvas id="categoryDonutChart"></canvas></div>
-                        <!-- TAMBAHAN LEGENDA INDIKATOR DI BAWAH INI -->
-                        <div class="mt-4 grid grid-cols-2 gap-2 text-[10px] font-bold">
+                
+                <div class="space-y-6 flex flex-col h-full">
+                    <div class="glass-card rounded-2xl p-5 shadow-xs flex-1 flex flex-col">
+                        <h3 class="font-bold text-slate-900 text-sm mb-3 shrink-0">Komposisi Kehadiran</h3>
+                        <div class="relative flex-1 min-h-[250px] flex items-center justify-center"><canvas id="categoryDonutChart"></canvas></div>
+                        <div class="mt-4 grid grid-cols-2 gap-2 text-[10px] font-bold shrink-0">
                             <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
                                 <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9]"></span> <span class="text-slate-600">Guru</span></div>
                                 <span id="chartLegendGURU" class="text-slate-900">0</span>
@@ -205,7 +206,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card rounded-2xl p-5 shadow-xs bg-gradient-to-br from-white to-slate-50">
+                    <div class="glass-card rounded-2xl p-5 shadow-xs bg-gradient-to-br from-white to-slate-50 shrink-0">
                         <h3 class="font-bold text-slate-900 text-sm mb-3">Info Aturan Jam Kerja</h3>
                         <div class="space-y-2.5 text-xs">
                             <div class="flex items-center justify-between p-3 bg-slate-100/70 rounded-xl border border-slate-200/60">
