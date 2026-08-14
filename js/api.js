@@ -53,13 +53,27 @@ function onInitialDataLoaded(data, isBackgroundPoll = false) {
 
 function updateBridgeStatusUI() {
     const badge = document.getElementById('bridgeStatusBadge');
-    if (!badge) return;
-    if (bridgeStatus.isConnected) {
-        badge.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0";
-        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> ONLINE`;
-    } else {
-        badge.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 shrink-0";
-        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> OFFLINE`;
+    const adminPingBox = document.getElementById('adminBridgePingBox');
+    const adminPingTime = document.getElementById('adminBridgeTime');
+
+    if (badge) {
+        if (bridgeStatus.isConnected) {
+            badge.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0";
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> ONLINE`;
+        } else {
+            badge.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 shrink-0";
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> OFFLINE`;
+        }
+    }
+
+    if (adminPingBox && adminPingTime) {
+        if (bridgeStatus.isConnected) {
+            adminPingTime.innerText = `Ping: ${bridgeStatus.lastPing || 'Aktif'}`;
+            adminPingBox.className = "hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-[10px] font-bold";
+        } else {
+            adminPingTime.innerText = `Bridge Terputus`;
+            adminPingBox.className = "hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-[10px] font-bold";
+        }
     }
 }
 
