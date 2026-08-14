@@ -132,6 +132,33 @@
                 padding-bottom: 1rem;
             }
         }
+
+        /* TAB LAYOUT FIX - ADMIN MENU */
+        .tab-view.hidden {
+            display: none !important;
+        }
+
+        main > .tab-view:not(.hidden) {
+            width: 100%;
+        }
+
+        /* Hanya dashboard LIVE yang memakai layout full-screen flex.
+           Menu admin kembali ke layout normal agar tidak turun di bawah feed. */
+        @media (min-width: 1280px) {
+            #view-live:not(.hidden) {
+                display: flex;
+                flex-direction: column;
+            }
+
+            #view-log:not(.hidden),
+            #view-employees:not(.hidden),
+            #view-shifts:not(.hidden),
+            #view-settings:not(.hidden) {
+                display: block !important;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+        }
     </style>
 </head>
 <body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
