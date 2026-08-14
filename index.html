@@ -57,25 +57,26 @@
             }
         }
 
-        /* Area chart donut: beri ruang agar tidak menempel pada header/legend */
+        /* CHART DONUT: ruang atas dan bawah agar tidak menempel */
         .donut-chart-area {
             flex: 1 1 auto;
             min-height: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 18px 8px 20px;
-            margin-top: 2px;
-            margin-bottom: 2px;
+            padding: 18px 8px 22px;
+            margin: 2px 0;
         }
         .donut-chart-area .donut-wrap {
+            width: 100%;
+            height: 100%;
+            min-height: 170px;
+            max-height: 260px;
             margin: 0 auto;
         }
-        @media (min-width: 1600px) {
-            .donut-chart-area {
-                padding-top: 22px;
-                padding-bottom: 24px;
-            }
+        .donut-chart-area canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
 
         .pulse-live {
@@ -449,14 +450,16 @@
                         <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase shrink-0">Personel</span>
                     </div>
                     <div class="flex-1 min-h-0 flex flex-col">
-                        <div class="donut-wrap flex-1 min-h-0 relative w-full flex items-center justify-center mx-auto max-w-[250px]">
-                            <canvas id="categoryDonutChart"></canvas>
+                        <div class="donut-chart-area">
+                            <div class="donut-wrap relative flex items-center justify-center mx-auto max-w-[250px]">
+                                <canvas id="categoryDonutChart"></canvas>
+                            </div>
                         </div>
                         <div class="mt-auto pt-3 grid grid-cols-2 gap-1.5 text-[9px] sm:text-[10px] font-bold shrink-0">
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#0ea5e9]"></span><span class="text-slate-600 truncate">Guru</span></span><span id="chartLegendGURU" class="text-slate-900">0</span></div>
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#6366f1]"></span><span class="text-slate-600 truncate">Pegawai</span></span><span id="chartLegendPEGAWAI" class="text-slate-900">0</span></div>
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span><span class="text-slate-600 truncate">Keamanan</span></span><span id="chartLegendKEAMANAN" class="text-slate-900">0</span></div>
-                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span><span class="text-slate-600 truncate">Kebersihan</span></span><span id="chartLegendKEBERSIHAN" class="text-slate-900">0</span></div>
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#0ea5e9]"></span><span class="text-slate-600 truncate">Guru</span></span></div>
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#6366f1]"></span><span class="text-slate-600 truncate">Pegawai</span></span></div>
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span><span class="text-slate-600 truncate">Keamanan</span></span></div>
+                            <div class="legend-item flex items-center justify-between gap-1 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-100"><span class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span><span class="text-slate-600 truncate">Kebersihan</span></span></div>
                         </div>
                     </div>
                 </div>
