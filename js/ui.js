@@ -79,7 +79,7 @@ function renderLiveFeed() {
     if (attendanceLogs.length === 0) {
         container.innerHTML = `<div class="text-center py-12 text-slate-400 font-medium text-xs"><p>Belum ada pindaian absensi hari ini</p></div>`; return;
     }
-    container.innerHTML = attendanceLogs.slice(0, 10).map(log => {
+    container.innerHTML = attendanceLogs.slice(0, 7).map(log => {
         const emp = findEmployee(log.empId) || {};
         let badge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700">MASUK</span>`;
         if (log.status === 'TERLAMBAT') badge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-700">TERLAMBAT</span>`;
@@ -206,17 +206,18 @@ function fillTimeRulesForm() {
 }
 
 function initCharts() {
-    const ctx = document.getElementById('categoryDonutChart');
+    const ctx = document.getElementById('categoryBarChart');
     if (!ctx || categoryChart) return;
     categoryChart = new Chart(ctx, {
-        type: 'doughnut',
+        type: 'bar',
         data: { 
             labels: ['Guru', 'Pegawai', 'Keamanan', 'Kebersihan'], 
             datasets: [{ 
+                label: 'Jumlah Personel',
                 data: [0, 0, 0, 0], 
                 backgroundColor: ['#0ea5e9', '#6366f1', '#f59e0b', '#10b981'], 
-                borderWidth: 0,
-                hoverOffset: 4
+                borderRadius: 8,
+                barThickness: 32
             }] 
         },
         options: { 
@@ -227,40 +228,41 @@ function initCharts() {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return ` ${context.label}: ${context.raw} Personel`;
+                            return ` ${context.dataset.label || ''}: ${context.raw} Personel`;
                         }
                     }
                 }
             }, 
-            cutout: '72%' 
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0, font: { family: 'Inter', size: 10 } },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    ticks: { font: { family: 'Inter', size: 11, weight: '600' } },
+                    grid: { display: false }
+                }
+            }
         }
     });
+    updateDonutChart();
 }
 
 function updateDonutChart() {
+    if (!categoryChart) {
+        initCharts();
+    }
     if (!categoryChart) return;
+
     const count = { 'GURU': 0, 'PEGAWAI': 0, 'KEAMANAN': 0, 'KEBERSIHAN': 0 };
     employeesData.forEach(e => { 
         const c = (e.category || '').toUpperCase(); 
         if (count[c] !== undefined) count[c]++; 
     });
     
-    // Perbarui data grafik donut
     categoryChart.data.datasets[0].data = [count['GURU'], count['PEGAWAI'], count['KEAMANAN'], count['KEBERSIHAN']];
     categoryChart.update();
-
-    // Perbarui label legenda HTML agar sinkron
-    const legendGuru = document.getElementById('chartLegendGURU');
-    if (legendGuru) legendGuru.innerText = count['GURU'];
-
-    const legendPegawai = document.getElementById('chartLegendPEGAWAI');
-    if (legendPegawai) legendPegawai.innerText = count['PEGAWAI'];
-
-    const legendKeamanan = document.getElementById('chartLegendKEAMANAN');
-    if (legendKeamanan) legendKeamanan.innerText = count['KEAMANAN'];
-
-    const legendKebersihan = document.getElementById('chartLegendKEBERSIHAN');
-    if (legendKebersihan) legendKebersihan.innerText = count['KEBERSIHAN'];
 }
 
 function triggerLivePopup(log) {
@@ -304,14 +306,12 @@ function triggerLivePopup(log) {
     const card = document.getElementById('livePopupCard');
     overlay.classList.remove('hidden');
     
-    // Animasikan pop up muncul
     setTimeout(() => { 
         card.classList.remove('scale-90', 'opacity-0'); 
         bar.style.transition = 'width 3500ms linear'; 
         bar.style.width = '0%'; 
     }, 20);
     
-    // Setel timer otomatis untuk menutup pop up
     popupAutoTimer = setTimeout(dismissPopup, 3500);
 }
 
