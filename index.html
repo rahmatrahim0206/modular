@@ -249,6 +249,60 @@
             .kpi-value { font-size: 1.6rem; }
             .app-main { padding: .75rem; padding-top: .75rem; }
         }
+    
+        /* FINAL LIVE LAYOUT FIX */
+        @media (min-width: 1280px) {
+            .app-main {
+                padding-top: .55rem !important;
+                padding-bottom: .55rem !important;
+            }
+            #view-live:not(.hidden) {
+                height: calc(100vh - 4.25rem - 1.1rem) !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: .75rem !important;
+            }
+            #view-live:not(.hidden) .live-upper-grid {
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+                height: auto !important;
+            }
+            #view-live:not(.hidden) .stats-grid {
+                flex: 0 0 auto !important;
+                min-height: 0 !important;
+            }
+            #view-live:not(.hidden) .feed-card,
+            #view-live:not(.hidden) .info-card {
+                height: 100% !important;
+                min-height: 0 !important;
+            }
+            #view-live:not(.hidden) .feed-card > div:nth-child(2) {
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+            }
+            #view-live:not(.hidden) .feed-card > div:last-child {
+                display: block !important;
+                visibility: visible !important;
+                flex: 0 0 auto !important;
+                min-height: 44px !important;
+            }
+            #view-live:not(.hidden) .feed-list {
+                overflow: hidden !important;
+            }
+        }
+
+        /* Active navigation: only the selected menu is blue */
+        .nav-tab-btn.active {
+            background: linear-gradient(135deg, #0284c7, #2563eb) !important;
+            color: #fff !important;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, .12) !important;
+        }
+        .nav-tab-btn:not(.active) {
+            background: transparent !important;
+            color: #475569 !important;
+            box-shadow: none !important;
+        }
     </style>
 </head>
 <body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
@@ -735,5 +789,25 @@
     <script src="js/modals.js"></script>
     <script src="js/export.js"></script>
     <script src="js/app.js"></script>
+
+    <script>
+        // Pastikan tombol navigasi mengikuti tab yang benar setelah switchTab dari ui.js.
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof window.switchTab === 'function') {
+                const originalSwitchTab = window.switchTab;
+                window.switchTab = function(tabId) {
+                    originalSwitchTab(tabId);
+                    document.querySelectorAll('.nav-tab-btn').forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
+                    const activeBtn = document.getElementById('tabBtn-' + tabId);
+                    if (activeBtn) activeBtn.classList.add('active');
+                };
+                const liveBtn = document.getElementById('tabBtn-live');
+                if (liveBtn && !document.querySelector('.nav-tab-btn.active')) liveBtn.classList.add('active');
+            }
+        });
+    </script>
+
 </body>
 </html>
