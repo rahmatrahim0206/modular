@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full bg-slate-50 overflow-hidden">
+<html lang="id" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,35 +43,35 @@
         @keyframes pulse-green {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="h-screen flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-hidden">
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
 
     <!-- HEADER -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 shrink-0 z-30 shadow-xs">
-        <div class="max-w-[1750px] mx-auto px-3 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-14 py-2">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between min-h-[3.5rem] sm:min-h-[3.75rem] py-2">
                 <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 shrink-0">
-                        <i class="fa-solid fa-fingerprint text-lg sm:text-xl"></i>
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 shrink-0">
+                        <i class="fa-solid fa-fingerprint text-base sm:text-xl"></i>
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-1.5 flex-wrap">
-                            <h1 class="font-extrabold text-slate-900 text-base sm:text-lg leading-tight tracking-tight truncate">PresensiLive <span class="text-brand-600">Pro</span></h1>
-                            <span id="bridgeStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0">
+                            <h1 class="font-extrabold text-slate-900 text-sm sm:text-lg leading-tight tracking-tight truncate">PresensiLive <span class="text-brand-600">Pro</span></h1>
+                            <span id="bridgeStatusBadge" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> ONLINE
                             </span>
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-0.5 hidden sm:block">Integration Bridge • Absensi Realtime</p>
+                        <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 hidden sm:block">Integration Bridge • Absensi Realtime</p>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-2">
-                    <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-100/90 px-2.5 sm:px-3.5 py-1.5 rounded-xl border border-slate-200/80">
+                    <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-100/90 px-2 sm:px-3.5 py-1.5 rounded-xl border border-slate-200/80">
                         <i class="fa-regular fa-clock text-brand-600 text-xs sm:text-sm shrink-0"></i>
                         <div class="text-right leading-none">
                             <div id="liveClock" class="font-mono font-bold text-slate-800 text-xs sm:text-sm">00:00:00 WITA</div>
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <div id="authHeaderContainer" class="shrink-0">
-                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-all active:scale-95 shadow-xs">
+                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-all active:scale-95 shadow-xs">
                             <i class="fa-solid fa-lock text-xs sm:text-sm"></i>
                         </button>
                     </div>
@@ -89,9 +89,9 @@
     </header>
 
     <!-- NAVIGATION -->
-    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs shrink-0 z-20">
-        <div class="max-w-[1750px] mx-auto px-3 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between py-1.5 overflow-x-auto no-scrollbar gap-2 snap-x">
+    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs sticky top-[3.5rem] sm:top-[3.75rem] z-20">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between py-2 overflow-x-auto no-scrollbar gap-2 snap-x">
                 <div class="flex items-center gap-1.5 shrink-0">
                     <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn snap-start flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-brand-600 text-white shadow-xs whitespace-nowrap">
                         <i class="fa-solid fa-desktop"></i> <span>Dasbor Live</span>
@@ -126,100 +126,101 @@
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 max-w-[1750px] w-full mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col min-h-0 overflow-y-auto lg:overflow-hidden">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
         
         <!-- TAB LIVE -->
-        <section id="view-live" class="tab-view flex flex-col h-full space-y-3 min-h-0">
-            <!-- CARDS STATISTIK -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 shrink-0">
-                <div class="glass-card rounded-xl p-3 flex items-center justify-between shadow-xs">
-                    <div>
-                        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Total Personel</p>
-                        <h3 id="statTotalEmp" class="text-2xl lg:text-3xl font-extrabold text-slate-900 mt-0.5">0</h3>
-                        <p class="text-[10px] text-slate-500 font-medium truncate">Guru, Staf, Keamanan, Kebersihan</p>
+        <section id="view-live" class="tab-view space-y-4 sm:space-y-6">
+            <!-- STATS CARDS GRID (RESPONSIVE OPTIMIZED) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex items-center justify-between shadow-xs">
+                    <div class="min-w-0 pr-2">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Total Personel</p>
+                        <h3 id="statTotalEmp" class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-0.5 sm:mt-1">0</h3>
+                        <p class="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5 truncate hidden sm:block">Guru, Staf, Keamanan</p>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-base sm:text-xl shrink-0"><i class="fa-solid fa-user-group"></i></div>
                 </div>
-                <div class="glass-card rounded-xl p-3 flex items-center justify-between shadow-xs">
-                    <div>
-                        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Hadir Hari Ini</p>
-                        <h3 id="statPresentToday" class="text-2xl lg:text-3xl font-extrabold text-emerald-600 mt-0.5">0</h3>
-                        <p id="statPresentSub" class="text-[10px] text-emerald-600 font-medium truncate">0% dari total personel</p>
+                <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex items-center justify-between shadow-xs">
+                    <div class="min-w-0 pr-2">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Hadir Hari Ini</p>
+                        <h3 id="statPresentToday" class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-0.5 sm:mt-1">0</h3>
+                        <p id="statPresentSub" class="text-[10px] sm:text-[11px] text-emerald-600 font-medium mt-0.5 truncate">0% total</p>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base sm:text-xl shrink-0"><i class="fa-solid fa-user-check"></i></div>
                 </div>
-                <div class="glass-card rounded-xl p-3 flex items-center justify-between shadow-xs">
-                    <div>
-                        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Terlambat</p>
-                        <h3 id="statLateToday" class="text-2xl lg:text-3xl font-extrabold text-amber-500 mt-0.5">0</h3>
-                        <p class="text-[10px] text-amber-600 font-medium truncate">Melewati toleransi</p>
+                <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex items-center justify-between shadow-xs">
+                    <div class="min-w-0 pr-2">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Terlambat</p>
+                        <h3 id="statLateToday" class="text-xl sm:text-3xl font-extrabold text-amber-500 mt-0.5 sm:mt-1">0</h3>
+                        <p class="text-[10px] sm:text-[11px] text-amber-600 font-medium mt-0.5 truncate">Melewati toleransi</p>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-base sm:text-xl shrink-0"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 </div>
-                <div class="glass-card rounded-xl p-3 flex items-center justify-between shadow-xs">
-                    <div>
-                        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Belum Masuk</p>
-                        <h3 id="statAbsentToday" class="text-2xl lg:text-3xl font-extrabold text-rose-500 mt-0.5">0</h3>
-                        <p class="text-[10px] text-rose-500 font-medium truncate">Belum melakukan tap</p>
+                <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex items-center justify-between shadow-xs">
+                    <div class="min-w-0 pr-2">
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide truncate">Belum Masuk</p>
+                        <h3 id="statAbsentToday" class="text-xl sm:text-3xl font-extrabold text-rose-500 mt-0.5 sm:mt-1">0</h3>
+                        <p class="text-[10px] sm:text-[11px] text-rose-500 font-medium mt-0.5 truncate">Belum tap hari ini</p>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-user-xmark"></i></div>
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-base sm:text-xl shrink-0"><i class="fa-solid fa-user-xmark"></i></div>
                 </div>
             </div>
 
-            <!-- AREA UTAMA FEED & CHART -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch flex-1 min-h-0">
-                <div class="lg:col-span-2 glass-card rounded-xl p-4 shadow-xs flex flex-col h-[380px] lg:h-full min-h-0">
-                    <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 shrink-0">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-live"></div>
-                            <h2 class="font-extrabold text-slate-900 text-sm">Feed Absensi Realtime</h2>
+            <!-- FEED REALTIME & CHART SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
+                <!-- FEED REALTIME CONTAINER -->
+                <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-3 sm:pb-4 border-b border-slate-100">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 pulse-live"></div>
+                                <h2 class="font-extrabold text-slate-900 text-sm sm:text-base">Feed Absensi Realtime</h2>
+                            </div>
                         </div>
+                        <div id="liveFeedList" class="overflow-y-auto max-h-[380px] sm:max-h-[460px] lg:max-h-[500px] py-3 space-y-2.5 pr-1"></div>
                     </div>
-                    <div id="liveFeedList" class="flex-1 overflow-y-auto py-2 space-y-2 pr-1 min-h-0"></div>
-                    <div class="pt-2 border-t border-slate-100 text-center shrink-0">
-                        <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors flex items-center justify-center gap-1.5 w-full py-1 rounded-lg hover:bg-brand-50">
-                            Lihat Selengkapnya di Log Realtime <i class="fa-solid fa-arrow-right"></i>
+                    <div class="mt-2 pt-3 border-t border-slate-100 text-center shrink-0">
+                        <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors flex items-center justify-center gap-1.5 w-full py-2 rounded-xl hover:bg-brand-50">
+                            Lihat Selengkapnya di Log Realtime <i class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
                 
-                <div class="flex flex-col gap-3 lg:h-full min-h-0">
-                    <!-- FIX: PERBAIKAN CONTAINER CHART DISINI -->
-                    <div class="glass-card rounded-xl p-3.5 shadow-xs flex-1 flex flex-col min-h-0">
-                        <h3 class="font-bold text-slate-900 text-xs mb-2 shrink-0">Komposisi Kehadiran</h3>
-                        <div class="relative w-full h-44 lg:h-auto lg:flex-1 min-h-0 flex items-center justify-center p-1 overflow-hidden">
-                            <canvas id="categoryDonutChart"></canvas>
-                        </div>
-                        <div class="mt-2 grid grid-cols-2 gap-1.5 text-[10px] font-bold shrink-0">
-                            <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#0ea5e9]"></span> <span class="text-slate-600">Guru</span></div>
-                                <span id="chartLegendGURU" class="text-slate-900">0</span>
+                <!-- SIDEBAR CHART & RULES -->
+                <div class="space-y-4 sm:space-y-6 flex flex-col">
+                    <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs">
+                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm mb-3">Komposisi Kehadiran</h3>
+                        <div class="relative w-full h-48 sm:h-56 flex items-center justify-center"><canvas id="categoryDonutChart"></canvas></div>
+                        <div class="mt-4 grid grid-cols-2 gap-2 text-[10px] font-bold">
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9] shrink-0"></span> <span class="text-slate-600 truncate">Guru</span></div>
+                                <span id="chartLegendGURU" class="text-slate-900 ml-1">0</span>
                             </div>
-                            <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#6366f1]"></span> <span class="text-slate-600">Pegawai</span></div>
-                                <span id="chartLegendPEGAWAI" class="text-slate-900">0</span>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#6366f1] shrink-0"></span> <span class="text-slate-600 truncate">Pegawai</span></div>
+                                <span id="chartLegendPEGAWAI" class="text-slate-900 ml-1">0</span>
                             </div>
-                            <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span> <span class="text-slate-600">Keamanan</span></div>
-                                <span id="chartLegendKEAMANAN" class="text-slate-900">0</span>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] shrink-0"></span> <span class="text-slate-600 truncate">Keamanan</span></div>
+                                <span id="chartLegendKEAMANAN" class="text-slate-900 ml-1">0</span>
                             </div>
-                            <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span> <span class="text-slate-600">Kebersihan</span></div>
-                                <span id="chartLegendKEBERSIHAN" class="text-slate-900">0</span>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#10b981] shrink-0"></span> <span class="text-slate-600 truncate">Kebersihan</span></div>
+                                <span id="chartLegendKEBERSIHAN" class="text-slate-900 ml-1">0</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="glass-card rounded-xl p-3 shadow-xs bg-gradient-to-br from-white to-slate-50 shrink-0">
-                        <h3 class="font-bold text-slate-900 text-xs mb-2">Info Aturan Jam Kerja</h3>
-                        <div class="space-y-1.5 text-xs">
-                            <div class="flex items-center justify-between p-2 bg-slate-100/70 rounded-lg border border-slate-200/60">
-                                <span class="text-slate-600 font-medium text-[11px]">Jam Masuk</span>
-                                <span id="displayStdIn" class="font-mono font-extrabold text-slate-900 text-xs">-</span>
+
+                    <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs bg-gradient-to-br from-white to-slate-50">
+                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm mb-3">Info Aturan Jam Kerja</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-100/70 rounded-xl border border-slate-200/60">
+                                <span class="text-slate-600 font-medium">Jam Masuk</span>
+                                <span id="displayStdIn" class="font-mono font-extrabold text-slate-900 text-xs sm:text-sm">-</span>
                             </div>
-                            <div class="flex items-center justify-between p-2 bg-slate-100/70 rounded-lg border border-slate-200/60">
-                                <span class="text-slate-600 font-medium text-[11px]">Jam Pulang</span>
-                                <span id="displayStdOut" class="font-mono font-extrabold text-slate-900 text-xs">-</span>
+                            <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-100/70 rounded-xl border border-slate-200/60">
+                                <span class="text-slate-600 font-medium">Jam Pulang</span>
+                                <span id="displayStdOut" class="font-mono font-extrabold text-slate-900 text-xs sm:text-sm">-</span>
                             </div>
                         </div>
                     </div>
@@ -228,25 +229,29 @@
         </section>
 
         <!-- TAB LOG -->
-        <section id="view-log" class="tab-view hidden flex-1 min-h-0 flex flex-col space-y-3">
-            <div class="glass-card rounded-xl p-4 shadow-xs flex-1 flex flex-col min-h-0">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 shrink-0">
+        <section id="view-log" class="tab-view hidden space-y-4">
+            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
                     <div>
-                        <h2 class="font-extrabold text-slate-900 text-base">Log Riwayat Absensi Realtime</h2>
+                        <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Log Riwayat Absensi Realtime</h2>
                     </div>
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <input type="text" id="logSearchInput" onkeyup="filterLogTable()" placeholder="Cari NIP/Nama..." class="px-3 py-1.5 text-xs border border-slate-200 rounded-xl focus:ring-brand-500">
-                        <button onclick="openManualAttendanceModal()" class="admin-only hidden px-3 py-1.5 text-xs font-bold bg-brand-600 text-white rounded-xl"><i class="fa-solid fa-plus"></i> Input Manual</button>
-                        <button onclick="openImportMachineModal()" class="admin-only hidden px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-xl"><i class="fa-solid fa-file-import"></i> Tarik Data Mesin</button>
+                    <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                        <input type="text" id="logSearchInput" onkeyup="filterLogTable()" placeholder="Cari NIP/Nama..." class="w-full sm:w-auto px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <button onclick="openManualAttendanceModal()" class="admin-only hidden px-3.5 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-all"><i class="fa-solid fa-plus"></i> Input Manual</button>
+                        <button onclick="openImportMachineModal()" class="admin-only hidden px-3.5 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all"><i class="fa-solid fa-file-import"></i> Tarik Data Mesin</button>
                     </div>
                 </div>
-                <div class="overflow-y-auto flex-1 mt-3 min-h-0">
-                    <table class="w-full text-left text-xs text-slate-700">
-                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[10px] border-b border-slate-200 sticky top-0 z-10 backdrop-blur-md">
+                <div class="overflow-x-auto mt-4 rounded-xl border border-slate-200/80">
+                    <table class="w-full text-left text-xs text-slate-700 whitespace-nowrap">
+                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
                             <tr>
-                                <th class="p-2.5">Waktu Tap</th><th class="p-2.5">Personel</th><th class="p-2.5">NIP</th>
-                                <th class="p-2.5">Kategori & Jabatan</th><th class="p-2.5">Tipe Tap</th><th class="p-2.5">Status</th>
-                                <th class="p-2.5 text-right admin-only hidden">Aksi</th>
+                                <th class="p-3">Waktu Tap</th>
+                                <th class="p-3">Personel</th>
+                                <th class="p-3">NIP</th>
+                                <th class="p-3">Kategori & Jabatan</th>
+                                <th class="p-3">Tipe Tap</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-right admin-only hidden">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="logTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
@@ -256,28 +261,32 @@
         </section>
 
         <!-- TAB EMPLOYEES -->
-        <section id="view-employees" class="tab-view hidden flex-1 min-h-0 flex flex-col space-y-3">
-            <div class="glass-card rounded-xl p-4 shadow-xs flex-1 flex flex-col min-h-0">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 shrink-0">
+        <section id="view-employees" class="tab-view hidden space-y-4">
+            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 pb-4 border-b border-slate-200">
                     <div>
-                        <h2 class="font-extrabold text-slate-900 text-base">Manajemen Personel</h2>
+                        <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Manajemen Personel</h2>
                     </div>
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <button onclick="setEmpCategoryFilter('ALL')" class="emp-cat-filter px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-md transition-all" data-cat="ALL">Semua</button>
-                        <button onclick="setEmpCategoryFilter('GURU')" class="emp-cat-filter px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="GURU">Guru</button>
-                        <button onclick="setEmpCategoryFilter('PEGAWAI')" class="emp-cat-filter px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="PEGAWAI">Pegawai</button>
-                        <button onclick="setEmpCategoryFilter('KEAMANAN')" class="emp-cat-filter px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="KEAMANAN">Keamanan</button>
-                        <button onclick="setEmpCategoryFilter('KEBERSIHAN')" class="emp-cat-filter px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="KEBERSIHAN">Kebersihan</button>
-                        <button onclick="openEmployeeModal()" class="px-3 py-1 text-xs font-bold bg-brand-600 text-white rounded-xl shadow-md transition-all"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    <div class="flex items-center gap-1.5 flex-wrap w-full lg:w-auto">
+                        <button onclick="setEmpCategoryFilter('ALL')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition-all" data-cat="ALL">Semua</button>
+                        <button onclick="setEmpCategoryFilter('GURU')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="GURU">Guru</button>
+                        <button onclick="setEmpCategoryFilter('PEGAWAI')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="PEGAWAI">Pegawai</button>
+                        <button onclick="setEmpCategoryFilter('KEAMANAN')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="KEAMANAN">Keamanan</button>
+                        <button onclick="setEmpCategoryFilter('KEBERSIHAN')" class="emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" data-cat="KEBERSIHAN">Kebersihan</button>
+                        <button onclick="openEmployeeModal()" class="px-3.5 py-1.5 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-xs transition-all ml-auto lg:ml-0"><i class="fa-solid fa-plus"></i> Tambah</button>
                     </div>
                 </div>
-                <div class="overflow-y-auto flex-1 mt-3 min-h-0">
-                    <table class="w-full text-left text-xs text-slate-700">
-                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[10px] border-b border-slate-200 sticky top-0 z-10 backdrop-blur-md">
+                <div class="overflow-x-auto mt-4 rounded-xl border border-slate-200/80">
+                    <table class="w-full text-left text-xs text-slate-700 whitespace-nowrap">
+                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
                             <tr>
-                                <th class="p-2.5">Personel</th><th class="p-2.5">NIP</th><th class="p-2.5">Mesin PIN</th>
-                                <th class="p-2.5">Kategori</th><th class="p-2.5">Jabatan</th><th class="p-2.5">Shift</th>
-                                <th class="p-2.5 text-right">Aksi</th>
+                                <th class="p-3">Personel</th>
+                                <th class="p-3">NIP</th>
+                                <th class="p-3">Mesin PIN</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3">Jabatan</th>
+                                <th class="p-3">Shift</th>
+                                <th class="p-3 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="employeeTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
@@ -287,42 +296,46 @@
         </section>
 
         <!-- TAB SHIFTS -->
-        <section id="view-shifts" class="tab-view hidden flex-1 min-h-0 flex flex-col space-y-3">
-            <div class="glass-card rounded-xl p-4 shadow-xs flex-1 flex flex-col min-h-0">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-200 shrink-0">
-                    <h2 class="font-extrabold text-slate-900 text-base">Manajemen Shift Kerja</h2>
-                    <button onclick="openShiftModal()" class="px-3 py-1.5 text-xs font-bold bg-brand-600 text-white rounded-xl"><i class="fa-solid fa-plus"></i> Tambah Shift</button>
+        <section id="view-shifts" class="tab-view hidden space-y-4">
+            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+                    <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Manajemen Shift Kerja</h2>
+                    <button onclick="openShiftModal()" class="px-3.5 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-all"><i class="fa-solid fa-plus"></i> Tambah Shift</button>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 overflow-y-auto flex-1 min-h-0" id="shiftsGrid"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4" id="shiftsGrid"></div>
             </div>
         </section>
 
         <!-- TAB SETTINGS -->
-        <section id="view-settings" class="tab-view hidden flex-1 min-h-0 overflow-y-auto space-y-4">
-            <div class="glass-card rounded-xl p-5 shadow-xs">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
-                    <h2 class="font-extrabold text-slate-900 text-base">Daftar Skema Waktu Kerja</h2>
-                    <button onclick="openTimeSchemeModal()" class="px-3.5 py-1.5 text-xs font-bold bg-brand-600 text-white rounded-xl"><i class="fa-solid fa-plus"></i> Tambah Skema</button>
+        <section id="view-settings" class="tab-view hidden space-y-6">
+            <div class="glass-card rounded-2xl p-4 sm:p-6 shadow-xs">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                    <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Daftar Skema Waktu Kerja</h2>
+                    <button onclick="openTimeSchemeModal()" class="px-4 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-all"><i class="fa-solid fa-plus"></i> Tambah Skema</button>
                 </div>
-                <div class="overflow-x-auto mt-3">
-                    <table class="w-full text-left text-xs text-slate-700">
-                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[10px] border-b border-slate-200">
+                <div class="overflow-x-auto mt-4 rounded-xl border border-slate-200/80">
+                    <table class="w-full text-left text-xs text-slate-700 whitespace-nowrap">
+                        <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
                             <tr>
-                                <th class="p-2.5">Nama Skema</th><th class="p-2.5">Jam Kerja</th><th class="p-2.5">Toleransi</th>
-                                <th class="p-2.5">Window Scan</th><th class="p-2.5">Keterangan</th><th class="p-2.5 text-right">Aksi</th>
+                                <th class="p-3">Nama Skema</th>
+                                <th class="p-3">Jam Kerja</th>
+                                <th class="p-3">Toleransi</th>
+                                <th class="p-3">Window Scan</th>
+                                <th class="p-3">Keterangan</th>
+                                <th class="p-3 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="timeSchemesTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
                     </table>
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-200 bg-slate-50/70 p-3 rounded-xl">
-                    <h3 class="font-bold text-slate-800 text-xs mb-2">Opsi Notifikasi</h3>
+                <div class="mt-6 pt-4 border-t border-slate-200 bg-slate-50/70 p-4 rounded-2xl">
+                    <h3 class="font-bold text-slate-800 text-xs mb-3">Opsi Notifikasi</h3>
                     <form onsubmit="handleSaveTimeRules(event)" class="space-y-3 text-xs">
-                        <div class="flex gap-4">
-                            <label class="flex items-center gap-2"><input type="checkbox" id="inputAutoPopup"> Pop-up Realtime</label>
-                            <label class="flex items-center gap-2"><input type="checkbox" id="inputPlaySound"> Bunyikan Lonceng</label>
+                        <div class="flex gap-4 flex-wrap">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700"><input type="checkbox" id="inputAutoPopup" class="rounded text-brand-600"> Pop-up Realtime</label>
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700"><input type="checkbox" id="inputPlaySound" class="rounded text-brand-600"> Bunyikan Lonceng</label>
                         </div>
-                        <button type="submit" class="px-3.5 py-1.5 bg-slate-900 text-white font-bold rounded-xl text-xs">Simpan Opsi</button>
+                        <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-all">Simpan Opsi</button>
                     </form>
                 </div>
             </div>
@@ -335,7 +348,7 @@
     <div id="livePopupOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden transition-all">
         <div id="livePopupCard" class="bg-white rounded-3xl p-6 shadow-2xl max-w-sm w-full text-center relative overflow-hidden scale-90 opacity-0 transition-all">
             <div class="absolute top-0 left-0 right-0 h-1.5 bg-slate-100"><div id="popupProgressBar" class="h-full bg-brand-500 w-full transition-all ease-linear"></div></div>
-            <button onclick="dismissPopup()" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="dismissPopup()" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
             <div class="mt-4 mb-3"><img id="popupAvatar" src="" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-white shadow-xl"></div>
             <div>
                 <span id="popupTime" class="px-3 py-1 bg-slate-100 font-mono font-extrabold text-xs rounded-full"></span>
@@ -349,47 +362,47 @@
     </div>
 
     <!-- MODAL MANUAL ATTENDANCE -->
-    <div id="manualAttendanceModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <div class="flex justify-between pb-3 border-b border-slate-100">
-                <h3 id="manualModalTitle" class="font-extrabold text-base"><i class="fa-solid fa-user-pen text-brand-600"></i> Input Absensi</h3>
-                <button onclick="closeManualAttendanceModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div id="manualAttendanceModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 id="manualModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-user-pen text-brand-600"></i> Input Absensi</h3>
+                <button onclick="closeManualAttendanceModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleManualAttendanceSubmit(event)" class="mt-4 space-y-3 text-xs">
                 <input type="hidden" id="manualLogOriginalKey">
                 <div>
                     <label class="block font-semibold mb-1">Personel</label>
-                    <select id="manualEmpId" required class="w-full px-3 py-2 border border-slate-200 rounded-xl"></select>
+                    <select id="manualEmpId" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"></select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block font-semibold mb-1">Tanggal</label><input type="date" id="manualDate" required class="w-full px-3 py-2 border border-slate-200 rounded-xl font-mono"></div>
-                    <div><label class="block font-semibold mb-1">Jam</label><input type="time" id="manualTime" required class="w-full px-3 py-2 border border-slate-200 rounded-xl font-mono"></div>
+                    <div><label class="block font-semibold mb-1">Tanggal</label><input type="date" id="manualDate" required class="w-full px-3 py-2 border border-slate-200 rounded-xl font-mono focus:ring-2 focus:ring-brand-500 focus:outline-none"></div>
+                    <div><label class="block font-semibold mb-1">Jam</label><input type="time" id="manualTime" required class="w-full px-3 py-2 border border-slate-200 rounded-xl font-mono focus:ring-2 focus:ring-brand-500 focus:outline-none"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-semibold mb-1">Tipe Tap</label>
-                        <select id="manualType" class="w-full px-3 py-2 border rounded-xl"><option value="MASUK">MASUK</option><option value="PULANG">PULANG</option></select>
+                        <select id="manualType" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"><option value="MASUK">MASUK</option><option value="PULANG">PULANG</option></select>
                     </div>
                     <div>
                         <label class="block font-semibold mb-1">Status</label>
-                        <select id="manualStatus" class="w-full px-3 py-2 border rounded-xl"><option value="HADIR">HADIR</option><option value="TERLAMBAT">TERLAMBAT</option><option value="PULANG CEPAT">PULANG CEPAT</option><option value="LUPA ABSENSI">LUPA ABSENSI</option><option value="IZIN">IZIN</option><option value="SAKIT">SAKIT</option></select>
+                        <select id="manualStatus" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"><option value="HADIR">HADIR</option><option value="TERLAMBAT">TERLAMBAT</option><option value="PULANG CEPAT">PULANG CEPAT</option><option value="LUPA ABSENSI">LUPA ABSENSI</option><option value="IZIN">IZIN</option><option value="SAKIT">SAKIT</option></select>
                     </div>
                 </div>
-                <div><label class="block font-semibold mb-1">Catatan</label><input type="text" id="manualNote" class="w-full px-3 py-2 border rounded-xl"></div>
+                <div><label class="block font-semibold mb-1">Catatan</label><input type="text" id="manualNote" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"></div>
                 <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeManualAttendanceModal()" class="w-1/2 py-2 bg-slate-100 font-bold rounded-xl">Batal</button>
-                    <button type="submit" class="w-1/2 py-2 bg-brand-600 text-white font-bold rounded-xl">Simpan</button>
+                    <button type="button" onclick="closeManualAttendanceModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 font-bold rounded-xl transition-all">Batal</button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL TIME SCHEME -->
-    <div id="timeSchemeModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl p-6 max-w-lg w-full shadow-2xl">
-            <div class="flex justify-between pb-3 border-b border-slate-100">
-                <h3 id="timeSchemeModalTitle" class="font-extrabold text-base"><i class="fa-solid fa-clock text-brand-600"></i> Skema Waktu</h3>
-                <button onclick="closeTimeSchemeModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div id="timeSchemeModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 id="timeSchemeModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-clock text-brand-600"></i> Skema Waktu</h3>
+                <button onclick="closeTimeSchemeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleTimeSchemeSubmit(event)" class="mt-4 space-y-3 text-xs">
                 <input type="hidden" id="schemeModalId">
@@ -403,29 +416,29 @@
                     <div><label class="block font-semibold mb-1">Toleransi Pulang Cepat (Mnt)</label><input type="number" id="schemeModalTolEarly" required class="w-full px-3 py-2 border rounded-xl"></div>
                 </div>
                 <div class="p-3 bg-slate-50 rounded-xl border space-y-2">
-                    <span class="font-extrabold text-[11px]">Batas Window Scan:</span>
+                    <span class="font-extrabold text-[11px] text-slate-800">Batas Window Scan:</span>
                     <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[10px]">Scan Masuk Mulai</label><input type="time" id="schemeModalScanInStart" required class="w-full px-2 py-1.5 border rounded-lg"></div>
-                        <div><label class="block text-[10px]">Scan Masuk Akhir</label><input type="time" id="schemeModalScanInEnd" required class="w-full px-2 py-1.5 border rounded-lg"></div>
-                        <div><label class="block text-[10px]">Scan Pulang Mulai</label><input type="time" id="schemeModalScanOutStart" required class="w-full px-2 py-1.5 border rounded-lg"></div>
-                        <div><label class="block text-[10px]">Scan Pulang Akhir</label><input type="time" id="schemeModalScanOutEnd" required class="w-full px-2 py-1.5 border rounded-lg"></div>
+                        <div><label class="block text-[10px] text-slate-600">Scan Masuk Mulai</label><input type="time" id="schemeModalScanInStart" required class="w-full px-2 py-1.5 border rounded-lg"></div>
+                        <div><label class="block text-[10px] text-slate-600">Scan Masuk Akhir</label><input type="time" id="schemeModalScanInEnd" required class="w-full px-2 py-1.5 border rounded-lg"></div>
+                        <div><label class="block text-[10px] text-slate-600">Scan Pulang Mulai</label><input type="time" id="schemeModalScanOutStart" required class="w-full px-2 py-1.5 border rounded-lg"></div>
+                        <div><label class="block text-[10px] text-slate-600">Scan Pulang Akhir</label><input type="time" id="schemeModalScanOutEnd" required class="w-full px-2 py-1.5 border rounded-lg"></div>
                     </div>
                 </div>
                 <div><label class="block font-semibold mb-1">Keterangan</label><input type="text" id="schemeModalDesc" class="w-full px-3 py-2 border rounded-xl"></div>
                 <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeTimeSchemeModal()" class="w-1/2 py-2 bg-slate-100 font-bold rounded-xl">Batal</button>
-                    <button type="submit" class="w-1/2 py-2 bg-brand-600 text-white font-bold rounded-xl">Simpan</button>
+                    <button type="button" onclick="closeTimeSchemeModal()" class="w-1/2 py-2.5 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Batal</button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL EMPLOYEE -->
-    <div id="employeeModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <div class="flex justify-between pb-3 border-b border-slate-100">
-                <h3 id="empModalTitle" class="font-extrabold text-base"><i class="fa-solid fa-user-plus text-brand-600"></i> Personel</h3>
-                <button onclick="closeEmployeeModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div id="employeeModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 id="empModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-user-plus text-brand-600"></i> Personel</h3>
+                <button onclick="closeEmployeeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleEmployeeSubmit(event)" class="mt-4 space-y-3 text-xs">
                 <input type="hidden" id="empModalId">
@@ -439,19 +452,19 @@
                 <div><label class="block font-semibold mb-1">Jabatan</label><input type="text" id="empModalRole" class="w-full px-3 py-2 border rounded-xl"></div>
                 <div><label class="block font-semibold mb-1">Foto URL</label><input type="url" id="empModalPhoto" class="w-full px-3 py-2 border rounded-xl"></div>
                 <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeEmployeeModal()" class="w-1/2 py-2 bg-slate-100 font-bold rounded-xl">Batal</button>
-                    <button type="submit" class="w-1/2 py-2 bg-brand-600 text-white font-bold rounded-xl">Simpan</button>
+                    <button type="button" onclick="closeEmployeeModal()" class="w-1/2 py-2.5 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Batal</button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL SHIFT -->
-    <div id="shiftModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <div class="flex justify-between pb-3 border-b border-slate-100">
-                <h3 id="shiftModalTitle" class="font-extrabold text-base"><i class="fa-solid fa-calendar-plus text-brand-600"></i> Shift Kerja</h3>
-                <button onclick="closeShiftModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div id="shiftModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 id="shiftModalTitle" class="font-extrabold text-slate-900 text-base"><i class="fa-solid fa-calendar-plus text-brand-600"></i> Shift Kerja</h3>
+                <button onclick="closeShiftModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleShiftSubmit(event)" class="mt-4 space-y-3 text-xs">
                 <input type="hidden" id="shiftModalId">
@@ -475,8 +488,8 @@
                 </div>
                 <div><label class="block font-semibold mb-1">Deskripsi</label><input type="text" id="shiftModalDesc" class="w-full px-3 py-2 border rounded-xl"></div>
                 <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="closeShiftModal()" class="w-1/2 py-2 bg-slate-100 font-bold rounded-xl">Batal</button>
-                    <button type="submit" class="w-1/2 py-2 bg-brand-600 text-white font-bold rounded-xl">Simpan</button>
+                    <button type="button" onclick="closeShiftModal()" class="w-1/2 py-2.5 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Batal</button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl">Simpan</button>
                 </div>
             </form>
         </div>
@@ -486,11 +499,11 @@
     <div id="confirmDeleteModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl p-5 max-w-xs w-full shadow-2xl text-center">
             <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl mx-auto mb-3"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <h3 class="font-extrabold text-base">Konfirmasi Hapus</h3>
+            <h3 class="font-extrabold text-base text-slate-900">Konfirmasi Hapus</h3>
             <p id="confirmDeleteText" class="text-xs text-slate-500 mt-1">Hapus data ini?</p>
             <div class="mt-4 flex gap-2">
-                <button onclick="closeDeleteModal()" class="w-1/2 py-2 bg-slate-100 font-bold text-xs rounded-xl">Batal</button>
-                <button id="execDeleteBtn" class="w-1/2 py-2 bg-rose-600 text-white font-bold text-xs rounded-xl">Hapus</button>
+                <button onclick="closeDeleteModal()" class="w-1/2 py-2 bg-slate-100 font-bold text-xs rounded-xl hover:bg-slate-200">Batal</button>
+                <button id="execDeleteBtn" class="w-1/2 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl">Hapus</button>
             </div>
         </div>
     </div>
@@ -498,9 +511,9 @@
     <!-- MODAL LOGIN -->
     <div id="loginModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <div class="flex justify-between pb-3 border-b border-slate-100">
-                <h3 class="font-extrabold text-base"><i class="fa-solid fa-lock text-brand-600"></i> Login Admin</h3>
-                <button onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 class="font-extrabold text-base text-slate-900"><i class="fa-solid fa-lock text-brand-600"></i> Login Admin</h3>
+                <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleLoginSubmit(event)" class="mt-4 space-y-3 text-xs">
                 <div><label class="block font-semibold mb-1">Username</label><input type="text" id="loginUsername" required class="w-full px-3 py-2 border rounded-xl"></div>
@@ -512,7 +525,7 @@
                     </div>
                 </div>
                 <div id="loginErrorMsg" class="hidden p-2 bg-rose-50 text-rose-600 font-semibold text-[11px] rounded-lg">Username atau password salah.</div>
-                <div class="pt-2"><button type="submit" class="w-full py-2.5 bg-slate-900 text-white font-bold rounded-xl">Masuk</button></div>
+                <div class="pt-2"><button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-all">Masuk</button></div>
             </form>
         </div>
     </div>
