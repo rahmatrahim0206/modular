@@ -36,6 +36,26 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(226, 232, 240, 0.8);
         }
+
+        /* Panel kanan: dua box selalu sama tinggi dan proporsional */
+        #view-live .attendance-side-panels {
+            min-height: 0;
+        }
+        #categoryDonutChart {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        #absentList > div {
+            min-height: 0;
+        }
+        @media (min-width: 1280px) {
+            #view-live > .grid:nth-child(2) > div:last-child > .grid {
+                min-height: 0;
+            }
+            #view-live > .grid:nth-child(2) > div:last-child > .grid > div {
+                min-width: 0;
+            }
+        }
         .pulse-live {
             box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
             animation: pulse-green 2s infinite;
@@ -321,29 +341,52 @@
                 
                 <!-- SIDEBAR CHART & RULES -->
                 <div class="space-y-4 sm:space-y-6 flex flex-col justify-between">
-                    <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xs flex-1 flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-xs sm:text-sm mb-3">Komposisi Kehadiran</h3>
-                            <div class="relative w-full h-44 sm:h-52 flex items-center justify-center mx-auto max-w-[260px]">
-                                <canvas id="categoryDonutChart"></canvas>
+                    <div class="grid grid-cols-2 gap-3 sm:gap-4 flex-1 min-h-0 items-stretch">
+                        <!-- KOMPOSISI KEHADIRAN -->
+                        <div class="glass-card rounded-2xl p-3 sm:p-4 shadow-xs flex flex-col min-h-0 h-full overflow-hidden">
+                            <div class="flex items-center justify-between gap-2 mb-2.5 pb-2.5 border-b border-slate-100 shrink-0">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-brand-500 shrink-0"></span>
+                                    <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">Komposisi Kehadiran</h3>
+                                </div>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 shrink-0">PERSONEL</span>
+                            </div>
+                            <div class="flex-1 min-h-0 flex flex-col justify-center">
+                                <div class="relative w-full h-32 sm:h-36 flex items-center justify-center mx-auto max-w-[190px] shrink-0">
+                                    <canvas id="categoryDonutChart"></canvas>
+                                </div>
+                                <div class="mt-2.5 grid grid-cols-2 gap-1.5 text-[9px] sm:text-[10px] font-bold">
+                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
+                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#0ea5e9] shrink-0"></span><span class="text-slate-600 truncate">Guru</span></div>
+                                        <span id="chartLegendGURU" class="text-slate-900 shrink-0">0</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
+                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#6366f1] shrink-0"></span><span class="text-slate-600 truncate">Pegawai</span></div>
+                                        <span id="chartLegendPEGAWAI" class="text-slate-900 shrink-0">0</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
+                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#f59e0b] shrink-0"></span><span class="text-slate-600 truncate">Keamanan</span></div>
+                                        <span id="chartLegendKEAMANAN" class="text-slate-900 shrink-0">0</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-1 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100 min-w-0">
+                                        <div class="flex items-center gap-1.5 min-w-0"><span class="w-2 h-2 rounded-full bg-[#10b981] shrink-0"></span><span class="text-slate-600 truncate">Kebersihan</span></div>
+                                        <span id="chartLegendKEBERSIHAN" class="text-slate-900 shrink-0">0</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-4 grid grid-cols-2 gap-2 text-[10px] font-bold">
-                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9] shrink-0"></span> <span class="text-slate-600 truncate">Guru</span></div>
-                                <span id="chartLegendGURU" class="text-slate-900 ml-1">0</span>
+
+                        <!-- TIDAK ABSEN -->
+                        <div class="glass-card rounded-2xl p-3 sm:p-4 shadow-xs flex flex-col min-h-0 h-full overflow-hidden">
+                            <div class="flex items-center justify-between gap-2 mb-2.5 pb-2.5 border-b border-slate-100 shrink-0">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                                    <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">Tidak Absen</h3>
+                                </div>
+                                <span id="absentListCount" class="min-w-6 h-5 px-1.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 text-[9px] font-extrabold flex items-center justify-center shrink-0">0</span>
                             </div>
-                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#6366f1] shrink-0"></span> <span class="text-slate-600 truncate">Pegawai</span></div>
-                                <span id="chartLegendPEGAWAI" class="text-slate-900 ml-1">0</span>
-                            </div>
-                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] shrink-0"></span> <span class="text-slate-600 truncate">Keamanan</span></div>
-                                <span id="chartLegendKEAMANAN" class="text-slate-900 ml-1">0</span>
-                            </div>
-                            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="flex items-center gap-1.5 truncate"><span class="w-2.5 h-2.5 rounded-full bg-[#10b981] shrink-0"></span> <span class="text-slate-600 truncate">Kebersihan</span></div>
-                                <span id="chartLegendKEBERSIHAN" class="text-slate-900 ml-1">0</span>
+                            <div id="absentList" class="flex-1 min-h-0 space-y-1.5 overflow-hidden">
+                                <div class="h-full flex items-center justify-center text-center text-slate-400 text-[10px]">Memuat data...</div>
                             </div>
                         </div>
                     </div>
