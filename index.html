@@ -326,7 +326,176 @@
             color: #475569 !important;
             box-shadow: none !important;
         }
-    </style>
+    
+        /* RESPONSIVE SCALING UNTUK MONITOR BESAR */
+        html, body {
+            min-width: 0;
+        }
+
+        /* 1366px: tetap compact */
+        @media (min-width: 1440px) {
+            .app-header .min-h-\[4\.25rem\] {
+                min-height: 4.5rem;
+            }
+            .app-header .w-full {
+                padding-left: 1.75rem;
+                padding-right: 1.75rem;
+            }
+
+            .sidebar {
+                width: 230px !important;
+            }
+            .app-main {
+                margin-left: 230px !important;
+                width: calc(100% - 230px) !important;
+            }
+
+            .live-upper-grid {
+                gap: 1.15rem !important;
+            }
+            .feed-card,
+            .info-card {
+                border-radius: 1.25rem !important;
+            }
+
+            .feed-card .p-4,
+            .info-card .p-4 {
+                padding: 1.05rem !important;
+            }
+
+            .live-feed-row {
+                min-height: 3.05rem;
+            }
+
+            .kpi-value {
+                font-size: 1.45rem;
+            }
+        }
+
+        /* 1600px: sedikit lebih lega */
+        @media (min-width: 1600px) {
+            .sidebar {
+                width: 238px !important;
+            }
+            .app-main {
+                margin-left: 238px !important;
+                width: calc(100% - 238px) !important;
+            }
+
+            .app-header .w-full {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+
+            .live-upper-grid {
+                gap: 1.25rem !important;
+            }
+
+            .live-feed-row {
+                min-height: 3.15rem;
+            }
+
+            .donut-chart-area {
+                padding-top: 22px !important;
+                padding-bottom: 26px !important;
+            }
+
+            .donut-chart-area .donut-wrap {
+                min-height: 190px !important;
+                max-height: 280px !important;
+            }
+
+            .kpi-label {
+                font-size: 0.72rem;
+            }
+        }
+
+        /* 1920x1080: target utama */
+        @media (min-width: 1800px) {
+            .sidebar {
+                width: 250px !important;
+            }
+            .app-main {
+                margin-left: 250px !important;
+                width: calc(100% - 250px) !important;
+            }
+
+            .app-header .w-full {
+                padding-left: 2.35rem;
+                padding-right: 2.35rem;
+            }
+
+            .app-header .min-h-\[4\.25rem\] {
+                min-height: 4.75rem;
+            }
+
+            .live-upper-grid {
+                gap: 1.4rem !important;
+            }
+
+            .feed-card,
+            .info-card {
+                border-radius: 1.35rem !important;
+            }
+
+            .feed-card .p-4,
+            .info-card .p-4 {
+                padding: 1.2rem !important;
+            }
+
+            .live-feed-row {
+                min-height: 3.35rem;
+                font-size: 0.88rem;
+            }
+
+            .donut-chart-area {
+                padding: 26px 12px 30px !important;
+            }
+
+            .donut-chart-area .donut-wrap {
+                min-height: 210px !important;
+                max-height: 300px !important;
+            }
+
+            .kpi-value {
+                font-size: 1.6rem;
+            }
+
+            .kpi-label {
+                font-size: 0.74rem;
+            }
+
+            .kpi-sub {
+                font-size: 0.68rem;
+            }
+
+            .sidebar-btn {
+                padding-top: 0.8rem !important;
+                padding-bottom: 0.8rem !important;
+            }
+        }
+
+        /* Monitor sangat besar: batasi agar tidak terasa raksasa */
+        @media (min-width: 2200px) {
+            .sidebar {
+                width: 260px !important;
+            }
+            .app-main {
+                margin-left: 260px !important;
+                width: calc(100% - 260px) !important;
+            }
+
+            .app-header .w-full {
+                padding-left: 2.75rem;
+                padding-right: 2.75rem;
+            }
+
+            .live-feed-row {
+                min-height: 3.45rem;
+            }
+        }
+
+</style>
 </head>
 <body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
 
