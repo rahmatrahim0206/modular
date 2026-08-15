@@ -1,4 +1,4 @@
-const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyqtbihJZ90pj2KPWOn6-brUPma3KXau0ywjI6r6R1UhGUA2HWRrONjhNJxpAsGLGv1/exec";
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzRehTA-PXkznFBvB_6cs0N8ZuvARIXjabGVisO35Blg6lXzwvf-9J2_9387uk7HE08Tw/exec";
 
 let isAdminLoggedIn = false;
 let activeTab = 'live';
