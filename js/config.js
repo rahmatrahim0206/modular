@@ -37,18 +37,19 @@ function getTodayISO() {
     return `${year}-${month}-${day}`;
 }
 
+/**
+ * Format string jam secara robust dengan Regex HH:mm agar bebas dari bug date 1899.
+ */
 function formatTimeDisplay(timeStr) {
     if (!timeStr) return "00:00 WITA";
-    const cleanStr = String(timeStr).replace(/\s*WITA\s*/gi, '').trim();
-    if (cleanStr.includes('T') || cleanStr.includes('GMT') || cleanStr.length > 10) {
-        const d = new Date(cleanStr);
-        if (!isNaN(d.getTime())) {
-            return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} WITA`;
-        }
+    const str = String(timeStr).replace(/\s*WITA\s*/gi, '').trim();
+    const match = str.match(/(\d{1,2}):(\d{2})/);
+    if (match) {
+        const hh = match[1].padStart(2, '0');
+        const mm = match[2].padStart(2, '0');
+        return `${hh}:${mm} WITA`;
     }
-    const parts = cleanStr.split(':');
-    if (parts.length >= 2) return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')} WITA`;
-    return `${cleanStr} WITA`;
+    return `${str} WITA`;
 }
 
 function showToast(message, type = 'success') {
