@@ -9,6 +9,29 @@ function startLiveClock() {
     update(); setInterval(update, 1000);
 }
 
+let isSidebarCollapsed = false;
+
+function toggleSidebar() {
+    isSidebarCollapsed = !isSidebarCollapsed;
+    const body = document.body;
+    const expandBtn = document.getElementById('sidebarExpandBtn');
+    
+    if (isSidebarCollapsed) {
+        body.classList.add('sidebar-collapsed');
+        if (expandBtn) expandBtn.classList.remove('hidden');
+    } else {
+        body.classList.remove('sidebar-collapsed');
+        if (expandBtn) expandBtn.classList.add('hidden');
+    }
+    
+    // Otomatis resize grafik saat sidebar disembunyikan / ditampilkan
+    if (typeof categoryChart !== 'undefined' && categoryChart) {
+        setTimeout(() => {
+            categoryChart.resize();
+        }, 320);
+    }
+}
+
 function toggleSettingsDropdown(forceOpen = false) {
     const subMenu = document.getElementById('settingsSubMenu');
     const chevron = document.getElementById('settingsChevron');
@@ -153,16 +176,16 @@ function renderBarChart(countObj) {
                 label: 'Jumlah Hadir',
                 data: chartData,
                 backgroundColor: [
-                    '#0ea5e9',
-                    '#6366f1',
-                    '#f59e0b',
-                    '#10b981'
+                    '#0ea5e9', // Sky blue for Guru
+                    '#6366f1', // Indigo for Pegawai
+                    '#f59e0b', // Amber for Keamanan
+                    '#10b981'  // Emerald for Kebersihan
                 ],
                 borderRadius: 8,
                 borderSkipped: false,
-                maxBarThickness: isSmallScreen ? 40 : 55,
-                categoryPercentage: 0.7,
-                barPercentage: 0.8
+                maxBarThickness: isSmallScreen ? 36 : 48,
+                categoryPercentage: 0.65,
+                barPercentage: 0.75
             }]
         },
         options: {
@@ -189,7 +212,11 @@ function renderBarChart(countObj) {
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { display: false }
+                    ticks: {
+                        display: true, // Display labels under all 4 bars
+                        font: { family: 'Inter', size: 11, weight: '700' },
+                        color: '#475569'
+                    }
                 }
             }
         }
@@ -202,7 +229,7 @@ function renderLiveFeed() {
     if (attendanceLogs.length === 0) {
         container.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium text-xs"><p>Belum ada pindaian absensi hari ini</p></div>`; return;
     }
-    container.innerHTML = attendanceLogs.slice(0, 7).map(log => {
+    container.innerHTML = attendanceLogs.slice(0, 10).map(log => {
         const emp = findEmployee(log.empId) || {};
         let badge = `<span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">MASUK</span>`;
         if (log.status === 'TERLAMBAT') badge = `<span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">TERLAMBAT</span>`;
