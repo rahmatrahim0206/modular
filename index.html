@@ -103,7 +103,7 @@
                         <i class="fa-solid fa-graduation-cap text-lg"></i>
                     </div>
                     <div class="min-w-0">
-                        <h1 class="font-extrabold text-white text-base sm:text-lg leading-tight tracking-wide truncate">ABSENSI PERSONEL SMPN 3 MAKASSAR</h1>
+                        <h1 class="font-extrabold text-white text-base sm:text-lg leading-tight tracking-wide truncate">SMAR SMP NEGERI 3 MAKASSAR</h1>
                         <p class="text-[11px] text-slate-400 font-medium truncate">Live Dashboard Monitoring</p>
                     </div>
                 </div>
@@ -122,9 +122,14 @@
                     </div>
 
                     <!-- LIVE BADGE -->
-                    <div id="bridgeStatusBadge" class="h-10 px-3.5 rounded-xl text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center gap-2 shrink-0 tracking-wider shadow-xs">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
-                        <span class="text-[11px]">LIVE</span>
+                    <div id="bridgeStatusBadge" class="h-10 px-3.5 rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-2.5 shrink-0">
+                        <div class="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
+                        </div>
+                        <div class="text-left leading-tight">
+                            <div class="font-bold text-white text-xs sm:text-sm tracking-wide whitespace-nowrap">ONLINE</div>
+                            <div class="text-[9px] text-emerald-400 font-semibold hidden sm:block whitespace-nowrap">Terhubung</div>
+                        </div>
                     </div>
 
                     <div id="authHeaderContainer" class="shrink-0">
@@ -152,12 +157,23 @@
                     <button onclick="switchTab('employees')" id="tabBtn-employees" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
                         <i class="fa-solid fa-user-group w-4 text-center text-sm"></i><span>Personel</span>
                     </button>
-                    <button onclick="switchTab('shifts')" id="tabBtn-shifts" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
-                        <i class="fa-solid fa-calendar-days w-4 text-center text-sm"></i><span>Shift</span>
-                    </button>
-                    <button onclick="switchTab('settings')" id="tabBtn-settings" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
-                        <i class="fa-solid fa-sliders w-4 text-center text-sm"></i><span>Pengaturan</span>
-                    </button>
+                    <!-- MENU DROPDOWN PENGATURAN (SHIFT KERJA & SKEMA WAKTU) -->
+                    <div class="admin-only hidden flex flex-col">
+                        <button onclick="toggleSettingsDropdown()" id="tabBtn-settings-main" class="nav-tab-btn sidebar-btn flex items-center justify-between w-full px-4 py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-slate-700 hover:bg-slate-100">
+                            <span class="flex items-center gap-3">
+                                <i class="fa-solid fa-sliders w-4 text-center text-sm"></i><span>Pengaturan</span>
+                            </span>
+                            <i id="settingsChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+                        </button>
+                        <div id="settingsSubMenu" class="hidden flex-col gap-1 pl-7 pr-1 pt-1 pb-1">
+                            <button onclick="switchTab('shifts')" id="tabBtn-shifts" class="sub-tab-btn flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900 whitespace-nowrap">
+                                <i class="fa-solid fa-calendar-days text-xs text-brand-600"></i><span>Shift Kerja</span>
+                            </button>
+                            <button onclick="switchTab('settings')" id="tabBtn-settings" class="sub-tab-btn flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900 whitespace-nowrap">
+                                <i class="fa-solid fa-clock text-xs text-brand-600"></i><span>Skema Waktu Kerja</span>
+                            </button>
+                        </div>
+                    </div>
                     <button onclick="exportToExcel()" class="admin-only hidden sidebar-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-50 whitespace-nowrap">
                         <i class="fa-solid fa-file-excel w-4 text-center text-sm text-emerald-600"></i><span>Unduh Excel</span>
                     </button>
@@ -170,13 +186,13 @@
                         <p class="font-black text-slate-900 text-xs tracking-wide truncate">SMAR</p>
                         <p class="text-[10px] text-slate-500 font-semibold leading-tight mt-0.5">Sistem Monitoring Absensi Realtime</p>
                     </div>
-                    <div id="adminBadgeContainer" class="hidden mt-3">
-                        <div class="flex items-center justify-between gap-2 px-3 py-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[10px] font-semibold">
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-amber-600"></i><span>Admin Mode</span></span>
-                            <button onclick="handleLogout()" class="p-1 hover:bg-amber-200/60 rounded-md text-amber-700"><i class="fa-solid fa-xmark"></i></button>
+                    <div id="adminBadgeContainer" class="hidden mt-3.5 space-y-2.5">
+                        <div class="flex items-center justify-between gap-2.5 px-3.5 py-2.5 bg-amber-50 border border-amber-200/80 text-amber-900 rounded-xl text-xs font-semibold shadow-2xs">
+                            <span class="flex items-center gap-2 min-w-0"><i class="fa-solid fa-user-shield text-amber-600 shrink-0"></i><span class="truncate">Admin Mode</span></span>
+                            <button onclick="handleLogout()" class="p-1 hover:bg-amber-200/60 rounded-lg text-amber-700 transition-colors shrink-0" title="Keluar Mode Admin"><i class="fa-solid fa-xmark text-xs"></i></button>
                         </div>
-                        <div id="adminBridgePingBox" class="hidden mt-2 sm:flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold">
-                            <i class="fa-solid fa-network-wired"></i><span id="adminBridgeTime">-</span>
+                        <div id="adminBridgePingBox" class="hidden sm:flex items-center justify-between gap-2 px-3.5 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold shadow-2xs">
+                            <span class="flex items-center gap-2 min-w-0"><i class="fa-solid fa-network-wired text-slate-500 shrink-0"></i><span id="adminBridgeTime" class="truncate font-mono">-</span></span>
                         </div>
                     </div>
                 </div>
@@ -195,7 +211,7 @@
                         <div class="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-slate-100 shrink-0">
                             <div class="flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
-                                <h2 class="font-extrabold text-slate-900 text-xs sm:text-sm uppercase tracking-wide">LIVE FEED ABSENSI</h2>
+                                <h2 class="font-extrabold text-slate-900 text-xs sm:text-sm uppercase tracking-wide">LIVE FEED PRESENSI</h2>
                             </div>
                         </div>
                         <div id="liveFeedList" class="feed-list flex-1 min-h-0 overflow-hidden px-4 sm:px-5 py-3 space-y-2"></div>
