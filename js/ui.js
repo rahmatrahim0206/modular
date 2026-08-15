@@ -9,6 +9,22 @@ function startLiveClock() {
     update(); setInterval(update, 1000);
 }
 
+function toggleSettingsDropdown(forceOpen = false) {
+    const subMenu = document.getElementById('settingsSubMenu');
+    const chevron = document.getElementById('settingsChevron');
+    if (!subMenu) return;
+
+    if (forceOpen || subMenu.classList.contains('hidden')) {
+        subMenu.classList.remove('hidden');
+        subMenu.classList.add('flex');
+        if (chevron) chevron.classList.add('rotate-180');
+    } else {
+        subMenu.classList.add('hidden');
+        subMenu.classList.remove('flex');
+        if (chevron) chevron.classList.remove('rotate-180');
+    }
+}
+
 function switchTab(tabId) {
     if (['employees', 'shifts', 'settings'].includes(tabId) && !isAdminLoggedIn) {
         openLoginModal(); showToast("Silakan login sebagai admin", "error"); return;
@@ -18,7 +34,14 @@ function switchTab(tabId) {
     const activeSec = document.getElementById(`view-${tabId}`);
     if (activeSec) activeSec.classList.remove('hidden');
 
-    document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.nav-tab-btn, .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    if (['shifts', 'settings'].includes(tabId)) {
+        toggleSettingsDropdown(true);
+        const mainBtn = document.getElementById('tabBtn-settings-main');
+        if (mainBtn) mainBtn.classList.add('active');
+    }
+
     const activeBtn = document.getElementById(`tabBtn-${tabId}`);
     if (activeBtn) activeBtn.classList.add('active');
 
