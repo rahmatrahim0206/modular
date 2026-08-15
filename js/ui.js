@@ -18,21 +18,23 @@ function switchTab(tabId) {
     const activeSec = document.getElementById(`view-${tabId}`);
     if (activeSec) activeSec.classList.remove('hidden');
 
-    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
-        btn.classList.remove('bg-brand-600', 'text-white', 'shadow-xs');
-        btn.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100');
-    });
+    document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.getElementById(`tabBtn-${tabId}`);
-    if (activeBtn) {
-        activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100');
-        activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-xs');
-    }
+    if (activeBtn) activeBtn.classList.add('active');
+
     refreshAllViews(false);
+}
+
+function toggleMobileNav() {
+    const mobileMenu = document.getElementById('mobileNavMenu');
+    if (!mobileMenu) return;
+    mobileMenu.classList.toggle('hidden');
 }
 
 function refreshAllViews(isBgPoll = false) {
     try { updateDashboardStats(); } catch(e){}
     try { renderLiveFeed(); } catch(e){}
+    try { renderAbsentList(); } catch(e){}
     
     if (activeTab === 'log') { try { renderActivityLogTable(); } catch(e){} }
     if (activeTab === 'employees') { try { renderEmployeeList(); } catch(e){} }
@@ -66,11 +68,41 @@ function updateDashboardStats() {
 
     const firstScheme = timeSchemesData[0] || { startTime: '07:30', endTime: '16:00' };
     const inEl = document.getElementById('displayStdIn');
-    if (inEl) inEl.innerText = `${firstScheme.startTime || firstScheme.start || '07:30'} WITA`;
+    if (inEl) inEl.innerText = `${formatTimeDisplay(firstScheme.startTime || firstScheme.start || '07:30')}`;
     const outEl = document.getElementById('displayStdOut');
-    if (outEl) outEl.innerText = `${firstScheme.endTime || firstScheme.end || '16:00'} WITA`;
+    if (outEl) outEl.innerText = `${formatTimeDisplay(firstScheme.endTime || firstScheme.end || '16:00')}`;
 
-    updateDonutChart();
+    updateCategoryBars();
+}
+
+function updateCategoryBars() {
+    const todayISO = getTodayISO();
+    const todayLogs = attendanceLogs.filter(l => String(l.date).includes(todayISO));
+    const presentEmpIds = new Set(todayLogs.map(l => String(l.empId)));
+
+    const count = { 'GURU': 0, 'PEGAWAI': 0, 'KEAMANAN': 0, 'KEBERSIHAN': 0 };
+
+    employeesData.forEach(e => {
+        const isPresent = presentEmpIds.has(String(e.id)) || (e.machineName && presentEmpIds.has(String(e.machineName)));
+        if (isPresent) {
+            const cat = (e.category || '').toUpperCase();
+            if (count[cat] !== undefined) count[cat]++;
+        }
+    });
+
+    const maxVal = Math.max(...Object.values(count), 1);
+
+    ['GURU', 'PEGAWAI', 'KEAMANAN', 'KEBERSIHAN'].forEach(cat => {
+        const cnt = count[cat] || 0;
+        const countEl = document.getElementById(`barCount${cat}`);
+        const fillEl = document.getElementById(`barFill${cat}`);
+
+        if (countEl) countEl.innerText = cnt;
+        if (fillEl) {
+            const pct = Math.round((cnt / maxVal) * 100);
+            fillEl.style.width = (cnt > 0 ? Math.max(6, pct) : 0) + '%';
+        }
+    });
 }
 
 function renderLiveFeed() {
@@ -87,14 +119,46 @@ function renderLiveFeed() {
         else if (log.type === 'PULANG') badge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-brand-100 text-brand-700">PULANG</span>`;
 
         return `
-            <div class="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100/80 rounded-2xl border border-slate-100 transition-colors">
+            <div class="live-feed-row flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-100 transition-colors">
                 <div class="flex items-center gap-3 min-w-0 pr-2">
-                    <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-200 shadow-sm">
-                    <div class="min-w-0"><h4 class="font-extrabold text-xs text-slate-900 truncate">${emp.name || log.empId}</h4><p class="text-[11px] text-slate-500 truncate">${emp.category || '-'} • ${emp.role || '-'}</p></div>
+                    <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs">
+                    <div class="min-w-0"><h4 class="font-extrabold text-xs text-slate-900 truncate">${emp.name || log.empId}</h4><p class="text-[10px] text-slate-500 truncate">${emp.category || '-'} • ${emp.role || '-'}</p></div>
                 </div>
                 <div class="text-right shrink-0"><div class="font-mono font-bold text-xs text-slate-800">${formatTimeDisplay(log.time)}</div><div class="mt-0.5">${badge}</div></div>
             </div>`;
     }).join('');
+}
+
+function renderAbsentList() {
+    const container = document.getElementById('absentList');
+    const countBadge = document.getElementById('absentListCount');
+    if (!container) return;
+
+    const todayISO = getTodayISO();
+    const todayLogs = attendanceLogs.filter(l => String(l.date).includes(todayISO));
+    const presentEmpIds = new Set(todayLogs.map(l => String(l.empId)));
+
+    const absentEmps = employeesData.filter(e => !presentEmpIds.has(String(e.id)) && (!e.machineName || !presentEmpIds.has(String(e.machineName))));
+
+    if (countBadge) countBadge.innerText = absentEmps.length;
+
+    if (absentEmps.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-emerald-600 font-bold text-xs"><i class="fa-solid fa-circle-check text-lg mb-1 block"></i>Semua personel sudah hadir!</div>`;
+        return;
+    }
+
+    container.innerHTML = absentEmps.map(emp => `
+        <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-colors">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-7 h-7 rounded-full object-cover shrink-0 border border-slate-200">
+                <div class="min-w-0">
+                    <h5 class="font-extrabold text-xs text-slate-900 truncate">${emp.name}</h5>
+                    <p class="text-[10px] text-slate-400 truncate">${emp.category || '-'} • ${emp.nip || '-'}</p>
+                </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-rose-50 text-rose-600 border border-rose-100 shrink-0">BELUM SCAN</span>
+        </div>
+    `).join('');
 }
 
 function renderActivityLogTable() {
@@ -116,7 +180,7 @@ function renderActivityLogTable() {
                 <td class="p-3 font-mono text-slate-500">${emp.nip || '-'}</td>
                 <td class="p-3"><span class="text-[11px] font-semibold">${emp.category || '-'}</span><br><span class="text-[10px] text-slate-400">${emp.role || '-'}</span></td>
                 <td class="p-3 font-bold">${log.type || 'MASUK'}</td>
-                <td class="p-3"><span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold shadow-sm ${badge}">${lbl}</span></td>${btns}
+                <td class="p-3"><span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold shadow-xs ${badge}">${lbl}</span></td>${btns}
             </tr>`;
     }).join('');
 }
@@ -136,10 +200,10 @@ function renderEmployeeList() {
     if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">Belum ada personel</td></tr>`; return; }
     
     tbody.innerHTML = filtered.map(e => {
-        const shift = shiftsData.find(s => String(s.id) === String(e.shiftId)) || { name: 'Reguler Utama', startTime: '07:30', endTime: '16:00' };
+        const shift = shiftsData.find(s => String(s.id) === String(e.shiftId)) || { name: 'Reguler Utama' };
         return `
             <tr class="hover:bg-slate-50/80 transition-colors">
-                <td class="p-3 flex items-center gap-3"><img src="${e.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-9 h-9 rounded-full shadow-sm"><span class="font-bold text-slate-900 truncate">${e.name}</span></td>
+                <td class="p-3 flex items-center gap-3"><img src="${e.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-8 h-8 rounded-full shadow-xs"><span class="font-bold text-slate-900 truncate">${e.name}</span></td>
                 <td class="p-3 font-mono text-slate-600">${e.nip || '-'}</td><td class="p-3 font-mono font-bold">${e.machineName || e.id}</td>
                 <td class="p-3 font-extrabold text-brand-600 text-[11px]">${e.category}</td><td class="p-3 text-slate-600">${e.role || '-'}</td>
                 <td class="p-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-md font-bold text-[10px]">${shift.name}</span></td>
@@ -151,7 +215,7 @@ function renderEmployeeList() {
 function setEmpCategoryFilter(cat) {
     currentEmpCatFilter = cat;
     document.querySelectorAll('.emp-cat-filter').forEach(btn => {
-        btn.className = (btn.dataset.cat === cat) ? "emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-md transition-all" : "emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all";
+        btn.className = (btn.dataset.cat === cat) ? "emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition-all" : "emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all";
     });
     renderEmployeeList();
 }
@@ -162,19 +226,19 @@ function renderShifts() {
     if (shiftsData.length === 0) { cont.innerHTML = `<div class="col-span-full text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-300"><p class="font-bold text-slate-500 text-sm">Belum ada shift kerja yang dibuat</p></div>`; return; }
     cont.innerHTML = shiftsData.map(s => {
         const daysArr = Array.isArray(s.days) ? s.days : String(s.days || '').split(',');
-        const badges = ALL_DAYS.map(d => `<span class="w-7 h-7 flex items-center justify-center rounded-lg text-[10px] font-extrabold ${daysArr.includes(d) ? 'bg-brand-600 text-white shadow-sm' : 'bg-slate-100 text-slate-400 opacity-60'}">${d}</span>`).join('');
+        const badges = ALL_DAYS.map(d => `<span class="w-7 h-7 flex items-center justify-center rounded-lg text-[10px] font-extrabold ${daysArr.includes(d) ? 'bg-brand-600 text-white shadow-xs' : 'bg-slate-100 text-slate-400 opacity-60'}">${d}</span>`).join('');
         return `
-        <div class="glass-card rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+        <div class="glass-card rounded-2xl p-4 shadow-xs hover:shadow-md transition-shadow">
             <h4 class="font-extrabold text-slate-900 text-sm">${s.name}</h4>
             <p class="text-[11px] text-slate-500 mt-0.5 truncate">${s.schemeName || 'Skema Waktu Reguler'}</p>
             <div class="mt-3.5 pb-3 border-b border-slate-100 flex items-center justify-between gap-1">${badges}</div>
             <div class="mt-3.5 space-y-2 text-xs">
-                <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Masuk</span> <span class="font-mono font-extrabold text-emerald-600">${s.startTime} WITA</span></div>
-                <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Pulang</span> <span class="font-mono font-extrabold text-brand-600">${s.endTime} WITA</span></div>
+                <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Masuk</span> <span class="font-mono font-extrabold text-emerald-600">${formatTimeDisplay(s.startTime)}</span></div>
+                <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Pulang</span> <span class="font-mono font-extrabold text-brand-600">${formatTimeDisplay(s.endTime)}</span></div>
             </div>
-            <div class="mt-4 pt-4 border-t border-slate-100 flex justify-end gap-2">
-                <button onclick="openShiftModal('${s.id}')" class="px-3.5 py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-                <button onclick="confirmDeleteShift('${s.id}')" class="px-3.5 py-1.5 text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl transition-colors"><i class="fa-solid fa-trash-can"></i> Hapus</button>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-2">
+                <button onclick="openShiftModal('${s.id}')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                <button onclick="confirmDeleteShift('${s.id}')" class="px-3 py-1.5 text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl transition-colors"><i class="fa-solid fa-trash-can"></i> Hapus</button>
             </div>
         </div>`;
     }).join('');
@@ -188,9 +252,9 @@ function renderTimeSchemesTable() {
         return `
             <tr class="hover:bg-slate-50/80 transition-colors">
                 <td class="p-3 font-extrabold text-slate-900">${s.name}</td>
-                <td class="p-3 font-mono font-bold text-slate-700 bg-slate-50">${s.startTime || s.start || '07:30'} - ${s.endTime || s.end || '16:00'}</td>
+                <td class="p-3 font-mono font-bold text-slate-700 bg-slate-50">${formatTimeDisplay(s.startTime || s.start || '07:30')} - ${formatTimeDisplay(s.endTime || s.end || '16:00')}</td>
                 <td class="p-3 font-mono text-xs"><span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded-md font-bold">+${s.toleranceMin || 15}m</span> <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md font-bold">-${s.toleranceEarlyOutMin || 10}m</span></td>
-                <td class="p-3 text-slate-600 text-[10px]"><span class="font-bold text-emerald-600">IN:</span> ${s.scanInStart || '05:00'} s/d ${s.scanInEnd || '11:00'}<br><span class="font-bold text-brand-600">OUT:</span> ${s.scanOutStart || '11:01'} s/d ${s.scanOutEnd || '20:00'}</td>
+                <td class="p-3 text-slate-600 text-[10px]"><span class="font-bold text-emerald-600">IN:</span> ${formatTimeDisplay(s.scanInStart || '05:00')} s/d ${formatTimeDisplay(s.scanInEnd || '11:00')}<br><span class="font-bold text-brand-600">OUT:</span> ${formatTimeDisplay(s.scanOutStart || '11:01')} s/d ${formatTimeDisplay(s.scanOutEnd || '20:00')}</td>
                 <td class="p-3 text-slate-500 max-w-[150px] truncate">${s.desc || '-'}</td>
                 <td class="p-3 text-right whitespace-nowrap">
                     <button onclick="openTimeSchemeModal('${s.id}')" class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -203,66 +267,6 @@ function renderTimeSchemesTable() {
 function fillTimeRulesForm() {
     if (document.getElementById('inputAutoPopup')) document.getElementById('inputAutoPopup').checked = !!timeRules.autoPopup;
     if (document.getElementById('inputPlaySound')) document.getElementById('inputPlaySound').checked = !!timeRules.playSound;
-}
-
-function initCharts() {
-    const ctx = document.getElementById('categoryBarChart');
-    if (!ctx || categoryChart) return;
-    categoryChart = new Chart(ctx, {
-        type: 'bar',
-        data: { 
-            labels: ['Guru', 'Pegawai', 'Keamanan', 'Kebersihan'], 
-            datasets: [{ 
-                label: 'Jumlah Personel',
-                data: [0, 0, 0, 0], 
-                backgroundColor: ['#0ea5e9', '#6366f1', '#f59e0b', '#10b981'], 
-                borderRadius: 8,
-                barThickness: 32
-            }] 
-        },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            plugins: { 
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return ` ${context.dataset.label || ''}: ${context.raw} Personel`;
-                        }
-                    }
-                }
-            }, 
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { precision: 0, font: { family: 'Inter', size: 10 } },
-                    grid: { color: '#f1f5f9' }
-                },
-                x: {
-                    ticks: { font: { family: 'Inter', size: 11, weight: '600' } },
-                    grid: { display: false }
-                }
-            }
-        }
-    });
-    updateDonutChart();
-}
-
-function updateDonutChart() {
-    if (!categoryChart) {
-        initCharts();
-    }
-    if (!categoryChart) return;
-
-    const count = { 'GURU': 0, 'PEGAWAI': 0, 'KEAMANAN': 0, 'KEBERSIHAN': 0 };
-    employeesData.forEach(e => { 
-        const c = (e.category || '').toUpperCase(); 
-        if (count[c] !== undefined) count[c]++; 
-    });
-    
-    categoryChart.data.datasets[0].data = [count['GURU'], count['PEGAWAI'], count['KEAMANAN'], count['KEBERSIHAN']];
-    categoryChart.update();
 }
 
 function triggerLivePopup(log) {
@@ -279,22 +283,22 @@ function triggerLivePopup(log) {
     const bar = document.getElementById('popupProgressBar');
     
     if (log.status === 'TERLAMBAT') { 
-        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 shadow-sm"; 
+        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 shadow-xs"; 
         statusText.innerHTML = "TERLAMBAT"; 
         bar.className = "h-full bg-amber-500 w-full transition-all ease-linear"; 
     }
     else if (log.status === 'PULANG CEPAT') { 
-        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-indigo-100 text-indigo-800 shadow-sm"; 
+        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-indigo-100 text-indigo-800 shadow-xs"; 
         statusText.innerHTML = "PULANG CEPAT"; 
         bar.className = "h-full bg-indigo-500 w-full transition-all ease-linear"; 
     }
     else if (log.type === 'PULANG') { 
-        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-brand-100 text-brand-800 shadow-sm"; 
+        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-brand-100 text-brand-800 shadow-xs"; 
         statusText.innerHTML = "PULANG"; 
         bar.className = "h-full bg-brand-500 w-full transition-all ease-linear"; 
     }
     else { 
-        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 shadow-sm"; 
+        statusText.className = "px-4 py-1.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 shadow-xs"; 
         statusText.innerHTML = "HADIR"; 
         bar.className = "h-full bg-emerald-500 w-full transition-all ease-linear"; 
     }
