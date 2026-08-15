@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>Absensi Personel SMPN 3 Makassar - Live Dashboard Monitoring</title>
+    <title>SMAR SMPN 3 Makassar - Live Dashboard Monitoring</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -44,17 +44,28 @@
         /* ===== LAYOUT ENGINE ===== */
         .app-shell { min-height: calc(100vh - 4.25rem); padding-top: 4.25rem; }
         
+        /* Smooth Transition Sidebar */
+        .app-sidebar, .app-main {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Sidebar Collapsed State */
+        body.sidebar-collapsed .app-sidebar {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.sidebar-collapsed .app-main {
+            margin-left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
         /* Desktop Layout (>= 1024px) */
         @media (min-width: 1024px) {
             .app-sidebar { width: 230px; position: fixed; left: 0; top: 4.25rem; bottom: 0; }
             .sidebar-inner { height: 100%; display: flex; flex-direction: column; overflow-y: auto; }
             .app-main { margin-left: 230px; width: calc(100% - 230px); max-width: calc(100% - 230px); min-height: calc(100vh - 4.25rem); }
-            
-            body:has(#view-live:not(.hidden)) { overflow: hidden !important; }
-            body:has(#view-live:not(.hidden)) .app-main { overflow: hidden; }
-            #view-live:not(.hidden) { height: calc(100vh - 4.25rem - 2.25rem); overflow: hidden; display: flex; flex-direction: column; }
-            .live-upper-grid { flex: 1 1 auto; min-height: 0; }
-            .feed-card, .info-card { height: 100%; min-height: 0; }
         }
 
         /* Mobile & Tablet Layout (< 1024px) */
@@ -65,10 +76,7 @@
             .sidebar-nav-container { display: flex; flex-direction: row; flex-wrap: nowrap; width: 100%; overflow-x: auto; gap: 0.5rem; }
             .sidebar-school { display: none; }
             .app-main { margin-left: 0; width: 100%; max-width: 100%; min-height: calc(100vh - 7.5rem); }
-            
-            #liveFeedList, #absentList { max-height: 320px; overflow-y: auto; }
 
-            /* Submenu dropdown horizontal logic for mobile */
             #settingsSubMenu {
                 flex-direction: row !important;
                 padding: 0 !important;
@@ -117,9 +125,7 @@
                         <i class="fa-solid fa-graduation-cap text-xs sm:text-lg"></i>
                     </div>
                     <div class="min-w-0">
-                        <!-- Desktop title -->
                         <h1 class="hidden sm:block font-extrabold text-white text-xs sm:text-sm lg:text-base leading-tight tracking-wide truncate">SMAR SMP NEGERI 3 MAKASSAR</h1>
-                        <!-- Mobile title -->
                         <h1 class="block sm:hidden font-extrabold text-white text-xs leading-tight tracking-wide truncate">SMAR SMPN 3</h1>
                         <p class="text-[9px] sm:text-[11px] text-slate-400 font-medium truncate">Live Dashboard Monitoring</p>
                     </div>
@@ -162,20 +168,31 @@
 
     <!-- APP SHELL -->
     <div class="app-shell flex">
+        <!-- FLOATING EXPAND BUTTON (WHEN SIDEBAR IS HIDDEN) -->
+        <button id="sidebarExpandBtn" onclick="toggleSidebar()" title="Tampilkan Sidebar" class="fixed left-3 top-[4.75rem] z-40 hidden w-9 h-9 bg-white shadow-md border border-slate-200 rounded-xl text-slate-600 hover:text-brand-600 hover:bg-slate-50 flex items-center justify-center transition-all active:scale-95">
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+
         <!-- SIDEBAR NAVIGATION -->
         <nav class="app-sidebar bg-white border-r border-slate-200 z-30">
             <div class="sidebar-inner px-2.5 sm:px-3 py-3 sm:py-5">
                 <div class="sidebar-nav-container flex flex-col gap-1.5 no-scrollbar">
-                    <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn sidebar-btn active flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
-                        <i class="fa-solid fa-border-all w-4 text-center text-xs sm:text-sm"></i><span>Dashboard</span>
-                    </button>
+                    <!-- DASHBOARD TAB WITH SMALL COLLAPSE ARROW -->
+                    <div class="flex items-center gap-1 w-full">
+                        <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn sidebar-btn active flex-1 flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
+                            <i class="fa-solid fa-border-all w-4 text-center text-xs sm:text-sm"></i><span>Dashboard</span>
+                        </button>
+                        <button onclick="toggleSidebar()" title="Sembunyikan Sidebar" class="p-2 sm:p-2.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all shrink-0">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                    </div>
                     <button onclick="switchTab('log')" id="tabBtn-log" class="nav-tab-btn sidebar-btn flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
                         <i class="fa-solid fa-list-check w-4 text-center text-xs sm:text-sm"></i><span>Log Realtime</span>
                     </button>
                     <button onclick="switchTab('employees')" id="tabBtn-employees" class="admin-only hidden nav-tab-btn sidebar-btn flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
                         <i class="fa-solid fa-user-group w-4 text-center text-xs sm:text-sm"></i><span>Personel</span>
                     </button>
-                    <!-- MENU DROPDOWN PENGATURAN (SHIFT KERJA & SKEMA WAKTU) -->
+                    <!-- MENU DROPDOWN PENGATURAN -->
                     <div class="admin-only hidden flex flex-col">
                         <button onclick="toggleSettingsDropdown()" id="tabBtn-settings-main" class="nav-tab-btn sidebar-btn flex items-center justify-between w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-slate-700 hover:bg-slate-100">
                             <span class="flex items-center gap-2.5 sm:gap-3">
@@ -220,11 +237,11 @@
         <!-- MAIN CONTENT -->
         <main class="app-main flex-1 w-full px-3 sm:px-6 xl:px-7 py-3 sm:py-5 flex flex-col justify-between min-h-[calc(100vh-4.25rem)]">
             <!-- TAB LIVE -->
-            <section id="view-live" class="tab-view dashboard-live space-y-3 sm:space-y-5 flex-1">
+            <section id="view-live" class="tab-view dashboard-live space-y-4 sm:space-y-5 flex-1">
                 <!-- UPPER MONITORING AREA (3 PANELS) -->
                 <div class="live-upper-grid grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5">
                     
-                    <!-- PANEL 1: LIVE FEED ABSENSI (5 COLS) -->
+                    <!-- PANEL 1: LIVE FEED PRESENSI (5 COLS) -->
                     <div class="feed-card glass-card rounded-2xl flex flex-col min-h-0 lg:col-span-5">
                         <div class="flex items-center justify-between px-3.5 sm:px-5 py-3 border-b border-slate-100 shrink-0">
                             <div class="flex items-center gap-2">
@@ -232,7 +249,8 @@
                                 <h2 class="font-extrabold text-slate-900 text-xs sm:text-sm uppercase tracking-wide">LIVE FEED PRESENSI</h2>
                             </div>
                         </div>
-                        <div id="liveFeedList" class="feed-list flex-1 min-h-0 px-3.5 sm:px-5 py-2.5 space-y-2"></div>
+                        <!-- SCROLL CONTAINER FOR FEED -->
+                        <div id="liveFeedList" class="feed-list flex-1 min-h-[280px] max-h-[380px] xl:max-h-[440px] overflow-y-auto px-3.5 sm:px-5 py-2.5 space-y-2"></div>
                         <div class="px-3.5 sm:px-5 pb-3 pt-2 border-t border-slate-100 shrink-0">
                             <button onclick="switchTab('log')" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-slate-50 hover:bg-brand-50 border border-slate-200/80">
                                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Lihat Selengkapnya di Log Realtime <i class="fa-solid fa-arrow-right text-xs"></i>
@@ -251,7 +269,7 @@
                         </div>
                         
                         <!-- CHART.JS BAR CANVAS -->
-                        <div class="flex-1 min-h-[180px] sm:min-h-[200px] xl:min-h-[240px] flex items-center justify-center py-2 px-1 relative">
+                        <div class="flex-1 min-h-[220px] max-h-[320px] flex items-center justify-center py-2 px-1 relative">
                             <canvas id="categoryBarChart"></canvas>
                         </div>
 
@@ -287,12 +305,13 @@
                                 <span id="absentListCount">0</span> PERSONEL
                             </span>
                         </div>
-                        <div id="absentList" class="flex-1 min-h-0 py-2 divide-y divide-slate-100 no-scrollbar"></div>
+                        <!-- SCROLL CONTAINER FOR ABSENT LIST -->
+                        <div id="absentList" class="flex-1 min-h-[280px] max-h-[380px] xl:max-h-[440px] overflow-y-auto py-2 divide-y divide-slate-100"></div>
                     </div>
                 </div>
 
-                <!-- KPI STATS AREA (5 CARDS ACROSS DESKTOP / 2 COLS MOBILE) -->
-                <div class="stats-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-4 shrink-0">
+                <!-- KPI STATS AREA -->
+                <div class="stats-grid grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2.5 sm:gap-4 shrink-0 mt-3">
                     <!-- TOTAL PERSONEL -->
                     <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5">
                         <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0 text-sm sm:text-base">
@@ -342,13 +361,13 @@
                     </div>
 
                     <!-- JAM STANDAR -->
-                    <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 col-span-2 lg:col-span-1">
+                    <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 col-span-2 md:col-span-1 xl:col-span-1">
                         <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 text-sm sm:text-base">
                             <i class="fa-solid fa-clock"></i>
                         </div>
                         <div class="min-w-0">
                             <p class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Jam Standar</p>
-                            <h3 class="font-extrabold text-sm sm:text-xl text-slate-900 leading-tight whitespace-nowrap"><span id="displayStdIn">07:30</span> - <span id="displayStdOut">16:00</span></h3>
+                            <h3 class="font-extrabold text-xs sm:text-base xl:text-lg text-slate-900 leading-tight whitespace-nowrap"><span id="displayStdIn">07:30</span> - <span id="displayStdOut">16:00</span></h3>
                             <p class="text-[8px] sm:text-[10px] text-slate-500 font-bold truncate">Jam kerja hari ini</p>
                         </div>
                     </div>
