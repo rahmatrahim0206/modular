@@ -25,16 +25,11 @@ function switchTab(tabId) {
     refreshAllViews(false);
 }
 
-function toggleMobileNav() {
-    const mobileMenu = document.getElementById('mobileNavMenu');
-    if (!mobileMenu) return;
-    mobileMenu.classList.toggle('hidden');
-}
-
 function refreshAllViews(isBgPoll = false) {
     try { updateDashboardStats(); } catch(e){}
     try { renderLiveFeed(); } catch(e){}
     try { renderAbsentList(); } catch(e){}
+    try { updateCategoryBars(); } catch(e){}
     
     if (activeTab === 'log') { try { renderActivityLogTable(); } catch(e){} }
     if (activeTab === 'employees') { try { renderEmployeeList(); } catch(e){} }
@@ -60,7 +55,7 @@ function updateDashboardStats() {
     const presEl = document.getElementById('statPresentToday');
     if (presEl) presEl.innerText = uniquePresent;
     const subEl = document.getElementById('statPresentSub');
-    if (subEl) subEl.innerText = `${total > 0 ? Math.round((uniquePresent / total) * 100) : 0}% dari total personel`;
+    if (subEl) subEl.innerText = `${total > 0 ? ((uniquePresent / total) * 100).toFixed(1) : 0}% dari total personel`;
     const lateEl = document.getElementById('statLateToday');
     if (lateEl) lateEl.innerText = lateCount;
     const absEl = document.getElementById('statAbsentToday');
@@ -68,11 +63,9 @@ function updateDashboardStats() {
 
     const firstScheme = timeSchemesData[0] || { startTime: '07:30', endTime: '16:00' };
     const inEl = document.getElementById('displayStdIn');
-    if (inEl) inEl.innerText = `${formatTimeDisplay(firstScheme.startTime || firstScheme.start || '07:30')}`;
+    if (inEl) inEl.innerText = `${formatTimeDisplay(firstScheme.startTime || firstScheme.start || '07:30').replace(' WITA','')}`;
     const outEl = document.getElementById('displayStdOut');
-    if (outEl) outEl.innerText = `${formatTimeDisplay(firstScheme.endTime || firstScheme.end || '16:00')}`;
-
-    updateCategoryBars();
+    if (outEl) outEl.innerText = `${formatTimeDisplay(firstScheme.endTime || firstScheme.end || '16:00').replace(' WITA','')}`;
 }
 
 function updateCategoryBars() {
@@ -90,17 +83,81 @@ function updateCategoryBars() {
         }
     });
 
-    const maxVal = Math.max(...Object.values(count), 1);
-
     ['GURU', 'PEGAWAI', 'KEAMANAN', 'KEBERSIHAN'].forEach(cat => {
         const cnt = count[cat] || 0;
         const countEl = document.getElementById(`barCount${cat}`);
-        const fillEl = document.getElementById(`barFill${cat}`);
-
         if (countEl) countEl.innerText = cnt;
-        if (fillEl) {
-            const pct = Math.round((cnt / maxVal) * 100);
-            fillEl.style.width = (cnt > 0 ? Math.max(6, pct) : 0) + '%';
+    });
+
+    renderBarChart(count);
+}
+
+function renderBarChart(countObj) {
+    const canvas = document.getElementById('categoryBarChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const chartData = [
+        countObj['GURU'] || 0,
+        countObj['PEGAWAI'] || 0,
+        countObj['KEAMANAN'] || 0,
+        countObj['KEBERSIHAN'] || 0
+    ];
+
+    if (categoryChart) {
+        categoryChart.data.datasets[0].data = chartData;
+        categoryChart.update();
+        return;
+    }
+
+    categoryChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Guru', 'Pegawai', 'Keamanan', 'Kebersihan'],
+            datasets: [{
+                label: 'Jumlah Hadir',
+                data: chartData,
+                backgroundColor: [
+                    '#0ea5e9',
+                    '#6366f1',
+                    '#f59e0b',
+                    '#10b981'
+                ],
+                borderRadius: 10,
+                borderSkipped: false,
+                maxBarThickness: 60,
+                categoryPercentage: 0.75,
+                barPercentage: 0.8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    padding: 10,
+                    titleFont: { family: 'Inter', size: 12, weight: 'bold' },
+                    bodyFont: { family: 'Inter', size: 12 },
+                    callbacks: {
+                        label: function(context) {
+                            return ` ${context.raw} Personel Hadir`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0, font: { family: 'Inter', size: 11, weight: '600' } },
+                    grid: { color: '#f1f5f9', drawBorder: false }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { family: 'Inter', size: 12, weight: 'bold' }, color: '#334155' }
+                }
+            }
         }
     });
 }
@@ -113,18 +170,24 @@ function renderLiveFeed() {
     }
     container.innerHTML = attendanceLogs.slice(0, 7).map(log => {
         const emp = findEmployee(log.empId) || {};
-        let badge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700">MASUK</span>`;
-        if (log.status === 'TERLAMBAT') badge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-700">TERLAMBAT</span>`;
-        else if (log.status === 'PULANG CEPAT') badge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-100 text-indigo-700">PULANG CEPAT</span>`;
-        else if (log.type === 'PULANG') badge = `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-brand-100 text-brand-700">PULANG</span>`;
+        let badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">MASUK</span>`;
+        if (log.status === 'TERLAMBAT') badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">TERLAMBAT</span>`;
+        else if (log.status === 'PULANG CEPAT') badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">PULANG CEPAT</span>`;
+        else if (log.type === 'PULANG') badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">PULANG</span>`;
 
         return `
-            <div class="live-feed-row flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-100 transition-colors">
+            <div class="live-feed-row flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/60 transition-colors">
                 <div class="flex items-center gap-3 min-w-0 pr-2">
                     <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs">
-                    <div class="min-w-0"><h4 class="font-extrabold text-xs text-slate-900 truncate">${emp.name || log.empId}</h4><p class="text-[10px] text-slate-500 truncate">${emp.category || '-'} • ${emp.role || '-'}</p></div>
+                    <div class="min-w-0">
+                        <h4 class="font-extrabold text-xs text-slate-900 truncate">${emp.name || log.empId}</h4>
+                        <p class="text-[10px] text-slate-500 truncate">${emp.category || '-'} • ${emp.role || '-'}</p>
+                    </div>
                 </div>
-                <div class="text-right shrink-0"><div class="font-mono font-bold text-xs text-slate-800">${formatTimeDisplay(log.time)}</div><div class="mt-0.5">${badge}</div></div>
+                <div class="text-right shrink-0">
+                    <div class="font-mono font-bold text-xs text-slate-800">${formatTimeDisplay(log.time)}</div>
+                    <div class="mt-0.5">${badge}</div>
+                </div>
             </div>`;
     }).join('');
 }
