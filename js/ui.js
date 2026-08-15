@@ -14,13 +14,22 @@ function toggleSettingsDropdown(forceOpen = false) {
     const chevron = document.getElementById('settingsChevron');
     if (!subMenu) return;
 
+    const isMobile = window.innerWidth < 1024;
+
     if (forceOpen || subMenu.classList.contains('hidden')) {
         subMenu.classList.remove('hidden');
         subMenu.classList.add('flex');
+        if (isMobile) {
+            subMenu.classList.add('flex-row', 'items-center');
+            subMenu.classList.remove('flex-col');
+        } else {
+            subMenu.classList.add('flex-col');
+            subMenu.classList.remove('flex-row', 'items-center');
+        }
         if (chevron) chevron.classList.add('rotate-180');
     } else {
         subMenu.classList.add('hidden');
-        subMenu.classList.remove('flex');
+        subMenu.classList.remove('flex', 'flex-row', 'flex-col');
         if (chevron) chevron.classList.remove('rotate-180');
     }
 }
@@ -78,7 +87,7 @@ function updateDashboardStats() {
     const presEl = document.getElementById('statPresentToday');
     if (presEl) presEl.innerText = uniquePresent;
     const subEl = document.getElementById('statPresentSub');
-    if (subEl) subEl.innerText = `${total > 0 ? ((uniquePresent / total) * 100).toFixed(1) : 0}% dari total personel`;
+    if (subEl) subEl.innerText = `${total > 0 ? ((uniquePresent / total) * 100).toFixed(1) : 0}% total`;
     const lateEl = document.getElementById('statLateToday');
     if (lateEl) lateEl.innerText = lateCount;
     const absEl = document.getElementById('statAbsentToday');
@@ -134,6 +143,8 @@ function renderBarChart(countObj) {
         return;
     }
 
+    const isSmallScreen = window.innerWidth < 640;
+
     categoryChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -147,9 +158,9 @@ function renderBarChart(countObj) {
                     '#f59e0b',
                     '#10b981'
                 ],
-                borderRadius: 10,
+                borderRadius: 8,
                 borderSkipped: false,
-                maxBarThickness: 55,
+                maxBarThickness: isSmallScreen ? 40 : 55,
                 categoryPercentage: 0.7,
                 barPercentage: 0.8
             }]
@@ -160,9 +171,9 @@ function renderBarChart(countObj) {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    padding: 10,
-                    titleFont: { family: 'Inter', size: 12, weight: 'bold' },
-                    bodyFont: { family: 'Inter', size: 12 },
+                    padding: 8,
+                    titleFont: { family: 'Inter', size: 11, weight: 'bold' },
+                    bodyFont: { family: 'Inter', size: 11 },
                     callbacks: {
                         label: function(context) {
                             return ` ${context.raw} Personel Hadir`;
@@ -173,12 +184,12 @@ function renderBarChart(countObj) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { precision: 0, font: { family: 'Inter', size: 11, weight: '600' } },
+                    ticks: { precision: 0, font: { family: 'Inter', size: 10, weight: '600' } },
                     grid: { color: '#f1f5f9', drawBorder: false }
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { display: false } // Sembunyikan label sumbu X agar tidak duplikat dengan badge di bawahnya
+                    ticks: { display: false }
                 }
             }
         }
@@ -189,26 +200,26 @@ function renderLiveFeed() {
     const container = document.getElementById('liveFeedList');
     if (!container) return;
     if (attendanceLogs.length === 0) {
-        container.innerHTML = `<div class="text-center py-12 text-slate-400 font-medium text-xs"><p>Belum ada pindaian absensi hari ini</p></div>`; return;
+        container.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium text-xs"><p>Belum ada pindaian absensi hari ini</p></div>`; return;
     }
     container.innerHTML = attendanceLogs.slice(0, 7).map(log => {
         const emp = findEmployee(log.empId) || {};
-        let badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">MASUK</span>`;
-        if (log.status === 'TERLAMBAT') badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">TERLAMBAT</span>`;
-        else if (log.status === 'PULANG CEPAT') badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">PULANG CEPAT</span>`;
-        else if (log.type === 'PULANG') badge = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">PULANG</span>`;
+        let badge = `<span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">MASUK</span>`;
+        if (log.status === 'TERLAMBAT') badge = `<span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">TERLAMBAT</span>`;
+        else if (log.status === 'PULANG CEPAT') badge = `<span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">PULANG CEPAT</span>`;
+        else if (log.type === 'PULANG') badge = `<span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">PULANG</span>`;
 
         return `
-            <div class="live-feed-row flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/60 transition-colors">
-                <div class="flex items-center gap-3 min-w-0 pr-2">
-                    <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs">
+            <div class="live-feed-row flex items-center justify-between p-2 sm:p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/60 transition-colors">
+                <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 pr-2">
+                    <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-7 h-7 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs">
                     <div class="min-w-0">
                         <h4 class="font-extrabold text-xs text-slate-900 truncate">${emp.name || log.empId}</h4>
-                        <p class="text-[10px] text-slate-500 truncate">${emp.category || '-'} • ${emp.role || '-'}</p>
+                        <p class="text-[9px] sm:text-[10px] text-slate-500 truncate">${emp.category || '-'} • ${emp.role || '-'}</p>
                     </div>
                 </div>
                 <div class="text-right shrink-0">
-                    <div class="font-mono font-bold text-xs text-slate-800">${formatTimeDisplay(log.time)}</div>
+                    <div class="font-mono font-bold text-[10px] sm:text-xs text-slate-800">${formatTimeDisplay(log.time)}</div>
                     <div class="mt-0.5">${badge}</div>
                 </div>
             </div>`;
@@ -229,20 +240,20 @@ function renderAbsentList() {
     if (countBadge) countBadge.innerText = absentEmps.length;
 
     if (absentEmps.length === 0) {
-        container.innerHTML = `<div class="text-center py-8 text-emerald-600 font-bold text-xs"><i class="fa-solid fa-circle-check text-lg mb-1 block"></i>Semua personel sudah hadir!</div>`;
+        container.innerHTML = `<div class="text-center py-6 text-emerald-600 font-bold text-xs"><i class="fa-solid fa-circle-check text-base mb-1 block"></i>Semua personel hadir!</div>`;
         return;
     }
 
     container.innerHTML = absentEmps.map(emp => `
-        <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-colors">
-            <div class="flex items-center gap-2.5 min-w-0">
-                <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-7 h-7 rounded-full object-cover shrink-0 border border-slate-200">
+        <div class="flex items-center justify-between p-1.5 sm:p-2 hover:bg-slate-50 rounded-xl transition-colors">
+            <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <img src="${emp.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover shrink-0 border border-slate-200">
                 <div class="min-w-0">
-                    <h5 class="font-extrabold text-xs text-slate-900 truncate">${emp.name}</h5>
-                    <p class="text-[10px] text-slate-400 truncate">${emp.category || '-'} • ${emp.nip || '-'}</p>
+                    <h5 class="font-extrabold text-[11px] sm:text-xs text-slate-900 truncate">${emp.name}</h5>
+                    <p class="text-[9px] sm:text-[10px] text-slate-400 truncate">${emp.category || '-'} • ${emp.nip || '-'}</p>
                 </div>
             </div>
-            <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-rose-50 text-rose-600 border border-rose-100 shrink-0">BELUM SCAN</span>
+            <span class="px-1.5 py-0.5 sm:px-2 rounded-md text-[8px] sm:text-[9px] font-bold bg-rose-50 text-rose-600 border border-rose-100 shrink-0">BELUM SCAN</span>
         </div>
     `).join('');
 }
@@ -261,12 +272,12 @@ function renderActivityLogTable() {
         const btns = isAdminLoggedIn ? `<td class="p-3 text-right admin-only"><button onclick="openManualAttendanceModalByUniqueKey('${uKey}')" class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="confirmDeleteLogByUniqueKey('${uKey}')" class="p-1.5 hover:bg-rose-50 rounded-lg text-rose-600 transition-colors"><i class="fa-solid fa-trash-can"></i></button></td>` : `<td class="admin-only hidden"></td>`;
         return `
             <tr class="hover:bg-slate-50/80 transition-colors">
-                <td class="p-3 font-mono text-[11px] font-medium">${log.date} ${formatTimeDisplay(log.time)}</td>
-                <td class="p-3 font-bold text-slate-900">${emp.name || log.empId}</td>
-                <td class="p-3 font-mono text-slate-500">${emp.nip || '-'}</td>
-                <td class="p-3"><span class="text-[11px] font-semibold">${emp.category || '-'}</span><br><span class="text-[10px] text-slate-400">${emp.role || '-'}</span></td>
-                <td class="p-3 font-bold">${log.type || 'MASUK'}</td>
-                <td class="p-3"><span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold shadow-xs ${badge}">${lbl}</span></td>${btns}
+                <td class="p-2.5 sm:p-3 font-mono text-[10px] sm:text-[11px] font-medium">${log.date} ${formatTimeDisplay(log.time)}</td>
+                <td class="p-2.5 sm:p-3 font-bold text-slate-900">${emp.name || log.empId}</td>
+                <td class="p-2.5 sm:p-3 font-mono text-slate-500">${emp.nip || '-'}</td>
+                <td class="p-2.5 sm:p-3"><span class="text-[10px] sm:text-[11px] font-semibold">${emp.category || '-'}</span><br><span class="text-[9px] sm:text-[10px] text-slate-400">${emp.role || '-'}</span></td>
+                <td class="p-2.5 sm:p-3 font-bold">${log.type || 'MASUK'}</td>
+                <td class="p-2.5 sm:p-3"><span class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-extrabold shadow-xs ${badge}">${lbl}</span></td>${btns}
             </tr>`;
     }).join('');
 }
@@ -289,11 +300,11 @@ function renderEmployeeList() {
         const shift = shiftsData.find(s => String(s.id) === String(e.shiftId)) || { name: 'Reguler Utama' };
         return `
             <tr class="hover:bg-slate-50/80 transition-colors">
-                <td class="p-3 flex items-center gap-3"><img src="${e.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-8 h-8 rounded-full shadow-xs"><span class="font-bold text-slate-900 truncate">${e.name}</span></td>
-                <td class="p-3 font-mono text-slate-600">${e.nip || '-'}</td><td class="p-3 font-mono font-bold">${e.machineName || e.id}</td>
-                <td class="p-3 font-extrabold text-brand-600 text-[11px]">${e.category}</td><td class="p-3 text-slate-600">${e.role || '-'}</td>
-                <td class="p-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-md font-bold text-[10px]">${shift.name}</span></td>
-                <td class="p-3 text-right whitespace-nowrap"><button onclick="openEmployeeModal('${e.id}')" class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="confirmDeleteEmployee('${e.id}')" class="p-1.5 hover:bg-rose-50 rounded-lg text-rose-600 transition-colors"><i class="fa-solid fa-trash-can"></i></button></td>
+                <td class="p-2.5 sm:p-3 flex items-center gap-2.5 sm:gap-3"><img src="${e.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full shadow-xs"><span class="font-bold text-slate-900 truncate">${e.name}</span></td>
+                <td class="p-2.5 sm:p-3 font-mono text-slate-600">${e.nip || '-'}</td><td class="p-2.5 sm:p-3 font-mono font-bold">${e.machineName || e.id}</td>
+                <td class="p-2.5 sm:p-3 font-extrabold text-brand-600 text-[10px] sm:text-[11px]">${e.category}</td><td class="p-2.5 sm:p-3 text-slate-600">${e.role || '-'}</td>
+                <td class="p-2.5 sm:p-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-md font-bold text-[9px] sm:text-[10px]">${shift.name}</span></td>
+                <td class="p-2.5 sm:p-3 text-right whitespace-nowrap"><button onclick="openEmployeeModal('${e.id}')" class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="confirmDeleteEmployee('${e.id}')" class="p-1.5 hover:bg-rose-50 rounded-lg text-rose-600 transition-colors"><i class="fa-solid fa-trash-can"></i></button></td>
             </tr>`;
     }).join('');
 }
@@ -301,7 +312,7 @@ function renderEmployeeList() {
 function setEmpCategoryFilter(cat) {
     currentEmpCatFilter = cat;
     document.querySelectorAll('.emp-cat-filter').forEach(btn => {
-        btn.className = (btn.dataset.cat === cat) ? "emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition-all" : "emp-cat-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all";
+        btn.className = (btn.dataset.cat === cat) ? "emp-cat-filter px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold bg-slate-900 text-white shadow-xs transition-all" : "emp-cat-filter px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all";
     });
     renderEmployeeList();
 }
@@ -312,19 +323,19 @@ function renderShifts() {
     if (shiftsData.length === 0) { cont.innerHTML = `<div class="col-span-full text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-300"><p class="font-bold text-slate-500 text-sm">Belum ada shift kerja yang dibuat</p></div>`; return; }
     cont.innerHTML = shiftsData.map(s => {
         const daysArr = Array.isArray(s.days) ? s.days : String(s.days || '').split(',');
-        const badges = ALL_DAYS.map(d => `<span class="w-7 h-7 flex items-center justify-center rounded-lg text-[10px] font-extrabold ${daysArr.includes(d) ? 'bg-brand-600 text-white shadow-xs' : 'bg-slate-100 text-slate-400 opacity-60'}">${d}</span>`).join('');
+        const badges = ALL_DAYS.map(d => `<span class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg text-[9px] sm:text-[10px] font-extrabold ${daysArr.includes(d) ? 'bg-brand-600 text-white shadow-xs' : 'bg-slate-100 text-slate-400 opacity-60'}">${d}</span>`).join('');
         return `
-        <div class="glass-card rounded-2xl p-4 shadow-xs hover:shadow-md transition-shadow">
-            <h4 class="font-extrabold text-slate-900 text-sm">${s.name}</h4>
-            <p class="text-[11px] text-slate-500 mt-0.5 truncate">${s.schemeName || 'Skema Waktu Reguler'}</p>
-            <div class="mt-3.5 pb-3 border-b border-slate-100 flex items-center justify-between gap-1">${badges}</div>
-            <div class="mt-3.5 space-y-2 text-xs">
-                <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Masuk</span> <span class="font-mono font-extrabold text-emerald-600">${formatTimeDisplay(s.startTime)}</span></div>
-                <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Pulang</span> <span class="font-mono font-extrabold text-brand-600">${formatTimeDisplay(s.endTime)}</span></div>
+        <div class="glass-card rounded-2xl p-3.5 sm:p-4 shadow-xs hover:shadow-md transition-shadow">
+            <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm">${s.name}</h4>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">${s.schemeName || 'Skema Waktu Reguler'}</p>
+            <div class="mt-3 pb-3 border-b border-slate-100 flex items-center justify-between gap-1">${badges}</div>
+            <div class="mt-3 space-y-2 text-xs">
+                <div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Masuk</span> <span class="font-mono font-extrabold text-emerald-600">${formatTimeDisplay(s.startTime)}</span></div>
+                <div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg border border-slate-100"><span class="text-slate-600 font-medium">Scan Pulang</span> <span class="font-mono font-extrabold text-brand-600">${formatTimeDisplay(s.endTime)}</span></div>
             </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-2">
-                <button onclick="openShiftModal('${s.id}')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-                <button onclick="confirmDeleteShift('${s.id}')" class="px-3 py-1.5 text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl transition-colors"><i class="fa-solid fa-trash-can"></i> Hapus</button>
+            <div class="mt-3.5 pt-2.5 border-t border-slate-100 flex justify-end gap-2">
+                <button onclick="openShiftModal('${s.id}')" class="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                <button onclick="confirmDeleteShift('${s.id}')" class="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl transition-colors"><i class="fa-solid fa-trash-can"></i> Hapus</button>
             </div>
         </div>`;
     }).join('');
@@ -337,12 +348,12 @@ function renderTimeSchemesTable() {
     tbody.innerHTML = timeSchemesData.map(s => {
         return `
             <tr class="hover:bg-slate-50/80 transition-colors">
-                <td class="p-3 font-extrabold text-slate-900">${s.name}</td>
-                <td class="p-3 font-mono font-bold text-slate-700 bg-slate-50">${formatTimeDisplay(s.startTime || s.start || '07:30')} - ${formatTimeDisplay(s.endTime || s.end || '16:00')}</td>
-                <td class="p-3 font-mono text-xs"><span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded-md font-bold">+${s.toleranceMin || 15}m</span> <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md font-bold">-${s.toleranceEarlyOutMin || 10}m</span></td>
-                <td class="p-3 text-slate-600 text-[10px]"><span class="font-bold text-emerald-600">IN:</span> ${formatTimeDisplay(s.scanInStart || '05:00')} s/d ${formatTimeDisplay(s.scanInEnd || '11:00')}<br><span class="font-bold text-brand-600">OUT:</span> ${formatTimeDisplay(s.scanOutStart || '11:01')} s/d ${formatTimeDisplay(s.scanOutEnd || '20:00')}</td>
-                <td class="p-3 text-slate-500 max-w-[150px] truncate">${s.desc || '-'}</td>
-                <td class="p-3 text-right whitespace-nowrap">
+                <td class="p-2.5 sm:p-3 font-extrabold text-slate-900">${s.name}</td>
+                <td class="p-2.5 sm:p-3 font-mono font-bold text-slate-700 bg-slate-50">${formatTimeDisplay(s.startTime || s.start || '07:30')} - ${formatTimeDisplay(s.endTime || s.end || '16:00')}</td>
+                <td class="p-2.5 sm:p-3 font-mono text-[11px]"><span class="px-1.5 py-0.5 bg-amber-50 text-amber-600 rounded-md font-bold">+${s.toleranceMin || 15}m</span> <span class="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded-md font-bold">-${s.toleranceEarlyOutMin || 10}m</span></td>
+                <td class="p-2.5 sm:p-3 text-slate-600 text-[10px]"><span class="font-bold text-emerald-600">IN:</span> ${formatTimeDisplay(s.scanInStart || '05:00')} s/d ${formatTimeDisplay(s.scanInEnd || '11:00')}<br><span class="font-bold text-brand-600">OUT:</span> ${formatTimeDisplay(s.scanOutStart || '11:01')} s/d ${formatTimeDisplay(s.scanOutEnd || '20:00')}</td>
+                <td class="p-2.5 sm:p-3 text-slate-500 max-w-[150px] truncate">${s.desc || '-'}</td>
+                <td class="p-2.5 sm:p-3 text-right whitespace-nowrap">
                     <button onclick="openTimeSchemeModal('${s.id}')" class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button onclick="confirmDeleteTimeScheme('${s.id}')" class="p-1.5 hover:bg-rose-50 rounded-lg text-rose-600 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
                 </td>
