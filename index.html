@@ -108,6 +108,38 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
         }
 
+        /* Custom Modern Sleek Thin Scrollbars */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 9999px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .touch-scroll { -webkit-overflow-scrolling: touch; }
@@ -134,31 +166,31 @@
                 <!-- RIGHT CLOCK & STATUS -->
                 <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                     <!-- CLOCK & DATE WIDGET -->
-                    <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-800/80 backdrop-blur-md px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-slate-700/60 shadow-inner h-8 sm:h-10">
-                        <div class="w-4 h-4 sm:w-5 sm:h-5 rounded-md sm:rounded-lg bg-brand-500/15 border border-brand-500/30 flex items-center justify-center text-brand-400 shrink-0">
-                            <i class="fa-regular fa-clock text-[9px] sm:text-xs"></i>
+                    <div class="h-10 px-3.5 rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-2.5 shrink-0">
+                        <div class="w-6 h-6 rounded-lg bg-brand-500/15 border border-brand-500/30 flex items-center justify-center text-brand-400 shrink-0">
+                            <i class="fa-regular fa-clock text-xs"></i>
                         </div>
                         <div class="text-right leading-tight">
-                            <div id="liveClock" class="font-mono font-bold text-white text-[9px] sm:text-xs tracking-wide whitespace-nowrap">00:00 WITA</div>
-                            <div id="liveDate" class="text-[8px] sm:text-[9px] text-slate-400 font-semibold hidden md:block whitespace-nowrap">Memuat...</div>
+                            <div id="liveClock" class="font-mono font-bold text-white text-xs sm:text-sm tracking-wide whitespace-nowrap">00:00 WITA</div>
+                            <div id="liveDate" class="text-[9px] text-slate-400 font-semibold hidden md:block whitespace-nowrap">Memuat...</div>
                         </div>
                     </div>
 
                     <!-- LIVE BADGE -->
-                    <div id="bridgeStatusBadge" class="h-8 sm:h-10 px-2 sm:px-3 rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-1.5 sm:gap-2 shrink-0">
-                        <div class="w-4 h-4 sm:w-5 sm:h-5 rounded-md sm:rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span>
+                    <div id="bridgeStatusBadge" class="h-10 px-3.5 rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-2.5 shrink-0">
+                        <div class="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
                         </div>
                         <div class="text-left leading-tight">
-                            <div class="font-bold text-white text-[9px] sm:text-xs tracking-wide whitespace-nowrap">ONLINE</div>
-                            <div class="text-[8px] sm:text-[9px] text-emerald-400 font-semibold hidden lg:block whitespace-nowrap">Terhubung</div>
+                            <div class="font-bold text-white text-xs sm:text-sm tracking-wide whitespace-nowrap">ONLINE</div>
+                            <div class="text-[9px] text-emerald-400 font-semibold hidden lg:block whitespace-nowrap">Terhubung</div>
                         </div>
                     </div>
 
                     <!-- AUTH BUTTON -->
                     <div id="authHeaderContainer" class="shrink-0">
-                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white rounded-xl transition-all border border-slate-700/60 active:scale-95 shadow-xs">
-                            <i class="fa-solid fa-lock text-[10px] sm:text-xs"></i>
+                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-10 h-10 flex items-center justify-center bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white rounded-xl transition-all border border-slate-700/60 active:scale-95 shadow-xs">
+                            <i class="fa-solid fa-lock text-xs"></i>
                         </button>
                     </div>
                 </div>
@@ -179,7 +211,7 @@
                 <div class="sidebar-nav-container flex flex-col gap-1.5 no-scrollbar">
                     <!-- DASHBOARD TAB WITH SMALL COLLAPSE ARROW -->
                     <div class="flex items-center gap-1 w-full">
-                        <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn sidebar-btn active flex-1 flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
+                        <button onclick="switchTab('live')" id="tabBtn-live" class="nav-tab-btn sidebar-btn flex-1 flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
                             <i class="fa-solid fa-border-all w-4 text-center text-xs sm:text-sm"></i><span>Dashboard</span>
                         </button>
                         <button onclick="toggleSidebar()" title="Sembunyikan Sidebar" class="p-2 sm:p-2.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all shrink-0">
@@ -221,12 +253,12 @@
                         <p class="font-black text-slate-900 text-xs tracking-wide truncate">SMAR</p>
                         <p class="text-[10px] text-slate-500 font-semibold leading-tight mt-0.5">Sistem Monitoring Absensi Realtime</p>
                     </div>
-                    <div id="adminBadgeContainer" class="hidden mt-3 space-y-2">
-                        <div class="flex items-center justify-between gap-2 px-3 py-2 bg-amber-50 border border-amber-200/80 text-amber-900 rounded-xl text-xs font-semibold shadow-2xs">
+                    <div id="adminBadgeContainer" class="hidden mt-3.5 space-y-2.5">
+                        <div class="flex items-center justify-between gap-2 px-3.5 py-2.5 bg-amber-50 border border-amber-200/80 text-amber-900 rounded-xl text-xs font-semibold shadow-2xs">
                             <span class="flex items-center gap-2 min-w-0"><i class="fa-solid fa-user-shield text-amber-600 shrink-0"></i><span class="truncate">Admin Mode</span></span>
                             <button onclick="handleLogout()" class="p-1 hover:bg-amber-200/60 rounded-lg text-amber-700 transition-colors shrink-0" title="Keluar Mode Admin"><i class="fa-solid fa-xmark text-xs"></i></button>
                         </div>
-                        <div id="adminBridgePingBox" class="flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold shadow-2xs">
+                        <div id="adminBridgePingBox" class="flex items-center justify-between gap-2 px-3.5 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold shadow-2xs">
                             <span class="flex items-center gap-2 min-w-0"><i class="fa-solid fa-network-wired text-slate-500 shrink-0"></i><span id="adminBridgeTime" class="truncate font-mono">-</span></span>
                         </div>
                     </div>
