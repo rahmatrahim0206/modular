@@ -152,7 +152,7 @@
         <div class="w-full px-3 sm:px-5 lg:px-7">
             <div class="flex items-center justify-between min-h-[3.75rem] sm:min-h-[4.25rem] gap-2 sm:gap-4">
                 <!-- LOGO & BRAND -->
-                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 sm:flex-initial">
                     <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 shrink-0 border border-slate-700">
                         <i class="fa-solid fa-graduation-cap text-xs sm:text-lg"></i>
                     </div>
@@ -166,22 +166,22 @@
                 <!-- RIGHT CLOCK & STATUS -->
                 <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                     <!-- CLOCK & DATE WIDGET -->
-                    <div class="h-10 px-3.5 rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-2.5 shrink-0">
-                        <div class="w-6 h-6 rounded-lg bg-brand-500/15 border border-brand-500/30 flex items-center justify-center text-brand-400 shrink-0">
-                            <i class="fa-regular fa-clock text-xs"></i>
+                    <div class="h-8 sm:h-10 px-2 sm:px-3.5 rounded-lg sm:rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg bg-brand-500/15 border border-brand-500/30 flex items-center justify-center text-brand-400 shrink-0 hidden xs:flex">
+                            <i class="fa-regular fa-clock text-[10px] sm:text-xs"></i>
                         </div>
                         <div class="text-right leading-tight">
-                            <div id="liveClock" class="font-mono font-bold text-white text-xs sm:text-sm tracking-wide whitespace-nowrap">00:00 WITA</div>
+                            <div id="liveClock" class="font-mono font-bold text-white text-[10px] sm:text-xs md:text-sm tracking-wide whitespace-nowrap">00:00 WITA</div>
                             <div id="liveDate" class="text-[9px] text-slate-400 font-semibold hidden md:block whitespace-nowrap">Memuat...</div>
                         </div>
                     </div>
 
                     <!-- LIVE BADGE -->
-                    <div id="bridgeStatusBadge" class="h-10 px-3.5 rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-2.5 shrink-0">
-                        <div class="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
+                    <div id="bridgeStatusBadge" class="h-8 sm:h-10 px-2 sm:px-3.5 rounded-lg sm:rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                            <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
                         </div>
-                        <div class="text-left leading-tight">
+                        <div class="text-left leading-tight hidden sm:block">
                             <div class="font-bold text-white text-xs sm:text-sm tracking-wide whitespace-nowrap">ONLINE</div>
                             <div class="text-[9px] text-emerald-400 font-semibold hidden lg:block whitespace-nowrap">Terhubung</div>
                         </div>
@@ -189,7 +189,7 @@
 
                     <!-- AUTH BUTTON -->
                     <div id="authHeaderContainer" class="shrink-0">
-                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-10 h-10 flex items-center justify-center bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white rounded-xl transition-all border border-slate-700/60 active:scale-95 shadow-xs">
+                        <button id="loginHeaderBtn" onclick="openLoginModal()" title="Login Admin" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white rounded-lg sm:rounded-xl transition-all border border-slate-700/60 active:scale-95 shadow-xs">
                             <i class="fa-solid fa-lock text-xs"></i>
                         </button>
                     </div>
