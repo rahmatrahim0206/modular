@@ -237,7 +237,7 @@
         <!-- MAIN CONTENT -->
         <main class="app-main flex-1 w-full px-3 sm:px-6 xl:px-7 py-3 sm:py-5 flex flex-col justify-between min-h-[calc(100vh-4.25rem)]">
             <!-- TAB LIVE -->
-            <section id="view-live" class="tab-view dashboard-live space-y-4 sm:space-y-5 flex-1">
+            <section id="view-live" class="tab-view dashboard-live space-y-4 sm:space-y-5 flex-1 flex flex-col justify-between">
                 <!-- UPPER MONITORING AREA (3 PANELS) -->
                 <div class="live-upper-grid grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5">
                     
@@ -310,8 +310,8 @@
                     </div>
                 </div>
 
-                <!-- KPI STATS AREA -->
-                <div class="stats-grid grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2.5 sm:gap-4 shrink-0 mt-3">
+                <!-- KPI STATS AREA (PINNED TO BOTTOM ON DESKTOP) -->
+                <div class="stats-grid grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2.5 sm:gap-4 shrink-0 mt-auto pt-3">
                     <!-- TOTAL PERSONEL -->
                     <div class="glass-card rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5">
                         <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0 text-sm sm:text-base">
