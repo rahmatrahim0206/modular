@@ -69,25 +69,25 @@ function updateBridgeStatusUI() {
     const adminPingTime = document.getElementById('adminBridgeTime');
 
     if (badge) {
-        badge.className = "h-10 px-3.5 rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-2.5 shrink-0";
+        badge.className = "h-8 sm:h-10 px-2 sm:px-3.5 rounded-lg sm:rounded-xl bg-slate-800/80 backdrop-blur-md border border-slate-700/60 shadow-inner flex items-center gap-1.5 sm:gap-2.5 shrink-0";
         if (bridgeStatus.isConnected) {
             badge.innerHTML = `
-                <div class="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
+                <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
                 </div>
-                <div class="text-left leading-tight">
+                <div class="text-left leading-tight hidden sm:block">
                     <div class="font-bold text-white text-xs sm:text-sm tracking-wide whitespace-nowrap">ONLINE</div>
-                    <div class="text-[9px] text-emerald-400 font-semibold hidden sm:block whitespace-nowrap">Terhubung</div>
+                    <div class="text-[9px] text-emerald-400 font-semibold hidden lg:block whitespace-nowrap">Terhubung</div>
                 </div>
             `;
         } else {
             badge.innerHTML = `
-                <div class="w-6 h-6 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
-                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
+                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rose-500"></span>
                 </div>
-                <div class="text-left leading-tight">
+                <div class="text-left leading-tight hidden sm:block">
                     <div class="font-bold text-white text-xs sm:text-sm tracking-wide whitespace-nowrap">OFFLINE</div>
-                    <div class="text-[9px] text-rose-400 font-semibold hidden sm:block whitespace-nowrap">Terputus</div>
+                    <div class="text-[9px] text-rose-400 font-semibold hidden lg:block whitespace-nowrap">Terputus</div>
                 </div>
             `;
         }
