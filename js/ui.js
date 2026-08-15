@@ -149,8 +149,8 @@ function renderBarChart(countObj) {
                 ],
                 borderRadius: 10,
                 borderSkipped: false,
-                maxBarThickness: 60,
-                categoryPercentage: 0.75,
+                maxBarThickness: 55,
+                categoryPercentage: 0.7,
                 barPercentage: 0.8
             }]
         },
@@ -178,7 +178,7 @@ function renderBarChart(countObj) {
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { font: { family: 'Inter', size: 12, weight: 'bold' }, color: '#334155' }
+                    ticks: { display: false } // Sembunyikan label sumbu X agar tidak duplikat dengan badge di bawahnya
                 }
             }
         }
