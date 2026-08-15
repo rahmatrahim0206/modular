@@ -254,18 +254,33 @@ function handleLogout() {
 function updateAdminUIState() {
     const adminNavs = document.querySelectorAll('.admin-only');
     const authHeader = document.getElementById('authHeaderContainer');
+    const loginBtn = document.getElementById('loginHeaderBtn');
     const adminBadge = document.getElementById('adminBadgeContainer');
 
     if (isAdminLoggedIn) {
         adminNavs.forEach(el => el.classList.remove('hidden'));
-        if (authHeader) authHeader.classList.add('hidden');
-        if (adminBadge) adminBadge.classList.remove('hidden');
-        if (adminBadge) adminBadge.classList.add('flex'); // Pastikan menggunakan flex saat tampil
+        if (authHeader) authHeader.classList.remove('hidden');
+        if (adminBadge) {
+            adminBadge.classList.remove('hidden');
+        }
+        if (loginBtn) {
+            loginBtn.onclick = handleLogout;
+            loginBtn.title = "Keluar / Logout Admin";
+            loginBtn.className = "w-10 h-10 flex items-center justify-center bg-amber-500/15 hover:bg-rose-500/25 text-amber-400 hover:text-rose-400 rounded-xl transition-all border border-amber-500/40 hover:border-rose-500/40 active:scale-95 shadow-xs";
+            loginBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket text-xs"></i>';
+        }
     } else {
         adminNavs.forEach(el => el.classList.add('hidden'));
         if (authHeader) authHeader.classList.remove('hidden');
-        if (adminBadge) adminBadge.classList.add('hidden');
-        if (adminBadge) adminBadge.classList.remove('flex');
+        if (adminBadge) {
+            adminBadge.classList.add('hidden');
+        }
+        if (loginBtn) {
+            loginBtn.onclick = openLoginModal;
+            loginBtn.title = "Login Admin";
+            loginBtn.className = "w-10 h-10 flex items-center justify-center bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white rounded-xl transition-all border border-slate-700/60 active:scale-95 shadow-xs";
+            loginBtn.innerHTML = '<i class="fa-solid fa-lock text-xs"></i>';
+        }
     }
 }
 
