@@ -14,7 +14,7 @@ let bridgeStatus = { isConnected: false, lastPing: null, ip: "" };
 let timeRules = { autoPopup: true, playSound: true };
 let attendanceLogs = [];
 let currentEmpCatFilter = 'ALL';
-let pollingIntervalMs = 10000;
+let pollingIntervalMs = 3000;
 
 const ALL_DAYS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
